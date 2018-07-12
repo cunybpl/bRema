@@ -1,0 +1,26 @@
+Package: bRema
+Title: Calculate and graph parameter based models for building energy usage
+Version: 1.0
+Authors@R: c(
+    person("Tin Tun", "Naing", , "tinnaing347@gmail.com", c("aut", "cre")),
+    person("Michele", "Bradley", , "michele.ebradley@gmail.com", "ctb"),
+    person("Johnny", "DeBlase", , "john.deblase@cuny.edu", "ctb"),
+    person("Honey", "Berk", , "honey.berk@cuny.edu", "ctb"),
+    person("Krystyna", "Horn", , "krystyna.horn@cuny.edu", "ctb"),
+    person("Marco", "Ascazubi", , "marco.ascazubi@cuny.edu", "ctb"),
+    person("Daniel", "Ladner", , "danieljladner@gmail.com", "ctb"),
+    person("Kirk", "Shillingford", , ,"ctb"),
+    person("CUNY BPL", role = c("cph"))
+    )
+Description: Given a dataframe of outside air temperature, and energy usage (i.e utility data),
+    it will calculate parameters based model and graph them by using plotly.
+Imports:
+    plotly
+Depends: R (>= 3.4)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
