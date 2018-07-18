@@ -4,8 +4,7 @@
 \alias{plot_model}
 \title{Handles plotting lines for parameter models}
 \usage{
-plot_model(x, model, B, cp1, cp2, energy, pre_key = 0, unit, bw,
-  p1 = plot_ly())
+plot_model(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = plot_ly())
 }
 \arguments{
 \item{x}{A vector (OAT).}
@@ -23,8 +22,6 @@ plot_model(x, model, B, cp1, cp2, energy, pre_key = 0, unit, bw,
 \item{pre_key}{A numeric value. 0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit. Defaults to 0.}
 
 \item{unit}{A boolean value. Determines whether or not to convert kWh to BTU.}
-
-\item{bw}{A boolean value. Determines whether or not it is the best worst model.}
 
 \item{p1}{A plotly object. Defaults to \code{plot_ly()}.}
 }

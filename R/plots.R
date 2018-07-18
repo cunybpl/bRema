@@ -49,7 +49,7 @@ main_line_point_plot <- function(df, best_model, energy, b_name)
 
     model_fig = plot_model(x = x1, model = best_model$model, B = B,
         					cp1 = best_model$cp1, cp2 = best_model$cp2,
-        					energy = energy, unit = FALSE, p1 = plot_ly(), bw = FALSE)
+        					energy = energy, unit = FALSE, p1 = plot_ly())
     final_figure = plot_point(df = df, energy = energy, model_fig = model_fig, b_name = b_name)
     return(final_figure)
 }
@@ -81,10 +81,20 @@ plot_point <- function(df, energy, pre_key = 0 , model_fig = plot_ly(), b_name =
 	name_n = paste('Post', energy)
   }
 
-  if (energy == 'Elec'){
- 
-    if(pre_key == 1 | pre_key == 0)
-    {color_n = 'rgba(51, 113, 213, 1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
+  switch(as.character(energy),
+        'Elec' = 
+        {
+          if(pre_key == 1 | pre_key == 0)
+          {color_n = 'rgba(51, 113, 213, 1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
+          y_title = "Usage (kWh)"
+        },
+        'Fuel' = 
+        {
+          if(pre_key == 1 | pre_key == 0)
+          {color_n = 'rgba(240, 24, 28,1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
+          y_title = "Usage (BTU)"
+        }
+    )
 
     #point_fig = geom_point(data = df, aes(x = x, y= y, shape= factor(z), color = 'Elec Consumption'))
     point_fig_act = add_trace(p = model_fig, x = ~util_act$x, y = ~util_act$y,
@@ -98,27 +108,7 @@ plot_point <- function(df, energy, pre_key = 0 , model_fig = plot_ly(), b_name =
     					name = paste(name_n, 'Est', sep = ' '), inherit = FALSE) %>%
     layout(title = b_name, showlegend = TRUE, margin = list(b = 100),
       xaxis = list(title = "Temperature"),
-      yaxis = list(title = "Usage (kWh)"))
-  }else
-  { 
-
-    if(pre_key == 1 | pre_key == 0)
-    {color_n = 'rgba(240, 24, 28,1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
-    
-    #point_fig = geom_point(data = df, aes(x = x, y= y, shape= factor(z), color = 'Fuel Consumption'))
-    point_fig_act = add_trace(p = model_fig, x = ~util_act$x, y = ~util_act$y,
-    						type ='scatter', mode ='markers',
-    						marker = list(symbol = 'circle', color = color_n, size = 9),
-    						name = paste(name_n, 'Act', sep = ' '), inherit = FALSE)
-    
-    point_fig = add_trace(p = point_fig_act, x = ~util_est$x, y = ~util_est$y,
-    					type ='scatter', mode ='markers',
-    					marker = list(symbol = 'circle-open', color = color_n, size = 9),
-    					name = paste(name_n, 'Est', sep = ' '), inherit = FALSE) %>%
-    layout(title = b_name, showlegend = TRUE, margin = list(b = 100),
-      xaxis = list(title = "Temperature"),
-      yaxis = list(title = "Usage (BTU)"))
-  }
+      yaxis = list(title = y_title))
   return(point_fig)
 }
 
@@ -133,11 +123,10 @@ plot_point <- function(df, energy, pre_key = 0 , model_fig = plot_ly(), b_name =
 #' @param energy A character string. Energy type, either 'Elec' or 'Fuel'.
 #' @param pre_key A numeric value. 0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit. Defaults to 0.
 #' @param unit A boolean value. Determines whether or not to convert kWh to BTU.
-#' @param bw A boolean value. Determines whether or not it is the best worst model.
 #' @param p1 A plotly object. Defaults to \code{plot_ly()}.
 #' @export
 #' @seealso \code{\link{plot_point}}
-plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, bw, p1 = plot_ly())
+plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = plot_ly())
 { 
   options(digits=15)
   #require(plotly)
@@ -198,7 +187,6 @@ plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, bw, p1 
   	}
   	)
 
-
   if (unit){
     df = data.frame(x = x, y = estimated*3412.14)
   }else
@@ -216,45 +204,22 @@ plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, bw, p1 
 	name_n = paste('Post', energy, 'Model')
   }
 
-  if (energy == 'Elec'){
+  switch(as.character(energy), 
+          'Elec' = 
+          {
+            if(pre_key == 1 | pre_key == 0)
+            {color_n = 'rgba(51, 113, 213, 1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
+          },
+          'Fuel' = 
+          {
+            if(pre_key == 1 | pre_key == 0){color_n = 'rgba(240, 24, 28,1)'}
+            else{color_n = 'rgba(109, 203, 15, 1)'}
+          }
+    )
 
-    if(pre_key == 1 | pre_key == 0)
-    {color_n = 'rgba(51, 113, 213, 1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
-
-
-    if (bw)
-    { 
-      #model_fig = geom_line(data = df, aes(x = x, y = y, color = 'Elec Model'), linetype = 2)
-      model_fig = add_trace(p = p1, x = ~df$x, y = ~df$y, type ='scatter',
-      						mode = 'lines', line = list(color = color_n, dash = 'dash'),
-      						name = name_n, inherit = FALSE)
-    }else
-    {
-      #model_fig = geom_line(data = df, aes(x = x, y = y, color = 'Elec Model'))
-      model_fig = add_trace(p = p1, x = ~df$x, y = ~df$y, type ='scatter',
+  model_fig = add_trace(p = p1, x = ~df$x, y = ~df$y, type ='scatter',
       						mode = 'lines', line = list(color = color_n),
       						name = name_n, inherit = FALSE)
-    }
-  }else
-  { 
-
-  	if(pre_key == 1 | pre_key == 0){color_n = 'rgba(240, 24, 28,1)'}
-  	else{color_n = 'rgba(109, 203, 15, 1)'}
-
-    if (bw)
-    {
-      #model_fig = geom_line(data = df, aes(x = x, y = y, color = 'Fuel Model'), linetype = 2)
-      model_fig = add_trace(p = p1, x = ~df$x, y = ~df$y, type ='scatter',
-      						mode = 'lines', line = list(color = color_n, dash = 'dash'),
-      						name = name_n, inherit = FALSE)
-    }else
-    {
-      #model_fig = geom_line(data = df, aes(x = x, y = y, color = 'Fuel Model'))
-      model_fig = add_trace(p = p1, x = ~df$x, y = ~df$y, type ='scatter',
-      						mode = 'lines', line = list(color = color_n),
-      						name = name_n, inherit = FALSE)
-    }
-  }
   return(model_fig)
 }
 
@@ -281,51 +246,46 @@ plot_timeseries <- function(util, energy)
   util_act = subset(util, util$estimated == 'Act')
   util_est = subset(util, util$estimated == 'Est')
 
+
+  switch(as.character(energy), 
+          'Elec' = 
+          {
+            title_n = 'Usage(kWh/sq/month)'
+            usage_color = 'rgba(51, 113, 213, 1)'
+          },
+          'Fuel' = 
+          {
+            title_n = 'Usage(BTU/sqft/month)'
+            usage_color = 'rgba(240, 24, 28,1)'
+          }
+          )
+
   ay <- list(
       tickfont = list(color = "red"),
       overlaying = "y",
       side = "right",
       title = "OAT"
   )
-  if (energy == 'Elec')
-  {
+
     p <- plot_ly() %>%
       add_trace(x = ~util$end_date, y = ~util$OAT, type ='scatter',
       			mode = 'lines', line = list(color = 'rgba(243, 154, 36, 1)'),
       			name = "OAT", yaxis = "y2") %>%
       add_trace(x = ~util$end_date, y = ~util$usage, type ='scatter',
-      			mode = 'lines', line = list(color = 'rgba(51, 113, 213, 1)'),
+      			mode = 'lines', line = list(color = usage_color),
       			name = "Usage") %>%
       add_trace(x = ~util_est$end_date, y = ~util_est$usage, type ='scatter', mode ='markers',
-      			marker = list(symbol = 'circle-open', color = 'rgba(51, 113, 213, 1)', size = 9),
+      			marker = list(symbol = 'circle-open', color = usage_color, size = 9),
       			name = 'Est') %>%
       add_trace(x = ~util_act$end_date, y = ~util_act$usage, type ='scatter', mode ='markers',
-      			marker = list(symbol = 'circle', color = 'rgba(51, 113, 213, 1)', size = 9),
+      			marker = list(symbol = 'circle', color = usage_color, size = 9),
       			name = 'Act') %>%
       layout(
-      title = "Time Series", yaxis2 = ay, yaxis = list(title='Usage(kWh/sq/month)'),
+      title = "Time Series", yaxis2 = ay, yaxis = list(title = title_n),
       				margin = list(b = 100),
       xaxis = list(type = "date", title="Date", tickformat = '%b-%y', tickvals = util$end_date)
     )
-  }else
-  {
-    p <- plot_ly() %>%
-      add_trace(x = ~util$end_date, y = ~util$OAT, type ='scatter', mode = 'lines',
-      			line = list(color = 'rgba(243, 154, 36, 1)'),  name = "OAT", yaxis = "y2") %>%
-      add_trace(x = ~util$end_date, y = ~util$usage, type ='scatter', mode = 'lines',
-      			line = list(color = 'rgba(240, 24, 28,1)'), name = "Usage") %>%
-      add_trace(x = ~util_est$end_date, y = ~util_est$usage, type ='scatter', mode ='markers',
-      			marker = list(symbol = 'circle-open', color = 'rgba(240, 24, 28,1)', size = 9),
-      			name = 'Est') %>%
-      add_trace(x = ~util_act$end_date, y = ~util_act$usage, type ='scatter', mode ='markers',
-      			marker = list(symbol = 'circle', color = 'rgba(240, 24, 28,1)', size = 9),
-      			name = 'Act') %>%
-      layout(
-      title = "Time Series", yaxis2 = ay, yaxis = list(title='Usage(BTU/sqft/month)'),
-      		margin = list(b = 100),
-      xaxis = list(type = "date", title="Date", tickformat = '%b-%y', tickvals = util$end_date)
-    )
-  }
+
 
   return(p)
 }
