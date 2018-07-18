@@ -98,6 +98,7 @@ batch_run_energy_retrofit <- function(utility, energy, metric_flag = TRUE, plot_
   for (bdbid_n in unique(utility$bdbid))
   {
     util = subset(utility, utility$bdbid == bdbid_n)
+    if(check_zeros(util)){next}
     best_result = main_best_model_retrofit(run_model_retrofit(util, plot_flag = plot_flag,
                                               step = step, n_pre, n_post), energy, metric_flag)
     if (!is.null(best_result$pre) & !is.null(best_result$post))

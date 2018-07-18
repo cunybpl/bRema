@@ -4,14 +4,14 @@
 \alias{plot_point}
 \title{Handles plotting points for parameter models}
 \usage{
-plot_point(df, energy, pre_key = 0, model_fig = plot_ly(), b_name = "")
+plot_point(df, energy, pre_key = 1, model_fig = plot_ly(), b_name = "")
 }
 \arguments{
 \item{df}{A data frame with columns: x, y, z (OAT, usage, estimated from utillity data frame)}
 
 \item{energy}{A character string. Energy Type, 'Elec' or 'Fuel'.}
 
-\item{pre_key}{A numeric value. 0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit. Defaults to 0.}
+\item{pre_key}{A numeric value. 1 for unretrofit/pre-retrofit and 3 for post-retrofit. Defaults to 1.}
 
 \item{model_fig}{A plotly object. Defaults to \code{plot_ly()}.}
 

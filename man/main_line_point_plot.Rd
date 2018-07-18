@@ -4,14 +4,16 @@
 \alias{main_line_point_plot}
 \title{Handles plotting parameter models}
 \usage{
-main_line_point_plot(df, best_model, energy, b_name)
+main_line_point_plot(df, best_model, energy, pre_key = 1, b_name)
 }
 \arguments{
 \item{df}{A data frame with columns: x, y, z (OAT, usage, estimated from utillity data frame). Column 'z' must be a character column with 'Est' for estimated (or 1) and 'Act' for acutal (or 0).}
 
 \item{best_model}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
 
-\item{energy}{A character string. Energy Type, either 'Elec' or 'Fuel'}
+\item{energy}{A character string. Energy Type, either 'Elec' or 'Fuel'.}
+
+\item{pre_key}{A numeric value. 1 for unretrofit/pre-retrofit and 3 for post-retrofit. Defaults to 1.}
 
 \item{b_name}{Plot title (Building Name or Buidling ID).}
 }

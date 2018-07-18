@@ -1,24 +1,21 @@
-#' Post model and Lean Analysis
+#' Post model calculations
 #'
 #' This function transforms best_model in a more meaningful way and returns calculation results after modeller, such as numeric and percent ranks for heating/cooling change-points, heating/cooling sensitivity and baseload.
-#' @details If \code{best_model} data frame contains only one energy type, \code{\link{lean_analysis_energy}} can be used instead.
+#' @details If \code{best_model} data frame contains only one energy type, \code{\link{post_model_energy}} can be used instead.
 #' @param utility A data frame of \strong{unretrofit data} with multiple buildings, with colums: OAT, usage, energy_type and end_date. See \code{\link{unretrofit_utility}} for data format.
 #' @param best_model A data frame returns from \code{\link{batch_run}} or \code{\link{batch_run_energy}}.
-#' @param lean_category_n A character string or a numeric value to rank buildings in groups. Defaults to \code{NA}.
-#' @param fiscal_year_n A numeric value. Defaults to \code{NA}.
-#' @param rank_flag A boolean value. Defaults to \code{TRUE}. If set to \code{FALSE}, there will be no ranking of baseload, heating/cooling change-points and sensitivity.
 #' @export
 #' @examples
 #' \dontrun{
 #' batch_result = batch_run(unretrofit_utility)
-#' post_df = main_lean_analysis(unretrofit_utility, batch_result$best_result_df)}
-main_lean_analysis <- function(utility, best_model, lean_category_n = NA, fiscal_year_n = NA, rank_flag = TRUE)
+#' post_df = main_post_model(unretrofit_utility, batch_result$best_result_df)}
+main_post_model <- function(utility, best_model)
 {
   options(digits=15)
   post_df = data.frame()
   for (energy in as.character(unique(best_model$energy_type)))
   { 
-    temp = lean_analysis_energy(utility, best_model, energy, lean_category_n, fiscal_year_n, rank_flag)
+    temp = post_model_energy(utility, best_model, energy)
     post_df = rbind(post_df, temp)
   }
 
@@ -28,33 +25,21 @@ main_lean_analysis <- function(utility, best_model, lean_category_n = NA, fiscal
   return(post_df)
 }
 
-#' Post model and Lean Analysis for specific energy type
+#' Post model calculations for specific energy type
 #'
 #' This function transforms best_model in a more meaningful way and returns lean analysis calculation results after modeller, such as numeric and percent ranks for heating/cooling change-points, heating/cooling sensitivity and baseload.
 #' @param utility A data frame of \strong{unretrofit data} with multiple buildings, with colums: OAT, usage, energy_type and end_date. See \code{\link{unretrofit_utility}} for data format.
 #' @param best_model A data frame returns from \code{\link{batch_run}} or \code{\link{batch_run_energy}}.
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
-#' @param lean_category_n A character string or a numeric value to rank buildings in groups. Defaults to \code{NA}.
-#' @param fiscal_year_n A numeric value. Defaults to \code{NA}.
-#' @param rank_flag A boolean value. Defaults to \code{TRUE}. If set to \code{FALSE}, there will be no ranking of baseload, heating/cooling change-points and sensitivity.
 #' @export
 #' @examples
 #' \dontrun{
 #' batch_result = batch_run(unretrofit_utility)
-#' post_df_elec = lean_analysis_energy(unretrofit_utility, batch_result$best_result_df, 'Elec')}
-lean_analysis_energy <- function(utility, best_model, energy, lean_category_n = NA, fiscal_year_n = NA, rank_flag = TRUE)
+#' post_df_elec = post_model_energy(unretrofit_utility, batch_result$best_result_df, 'Elec')}
+post_model_energy <- function(utility, best_model, energy)
 { 
   options(digits=15)
   post_df = data.frame()
-
-  if(!(is.na(lean_category_n)))
-  {
-    best_model = subset(best_model, best_model$lean_category == lean_category_n)
-  }
-  if (!is.na(lean_category_n))
-  {
-    best_model = subset(best_model, best_model$fiscal_year == fiscal_year_n)
-  }
 
   utility = subset(utility, utility$energy_type == energy)
   best_model = subset(best_model, best_model$energy_type == energy)
@@ -69,7 +54,6 @@ lean_analysis_energy <- function(utility, best_model, energy, lean_category_n = 
   }
   post_df = cbind(post_df, percent_heat_cool_func(post_df$total_consumption, post_df$heat_load, post_df$cool_load))
 
-  if (rank_flag){post_df = main_numeric_percent_rank(post_df, energy)}
   return(post_df)
 }
 
@@ -258,10 +242,19 @@ calc_cool_load <- function(utility, cp, ycp)
 #' @param post_df A data frame returned from \code{\link{post_model_prelimanary}}. The data frame should include multiple buildings to have meaningful interpretation of the rank.
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
 #' @export
-main_numeric_percent_rank <- function(post_df, energy)
+#' @examples
+#' \dontrun{
+#' batch_result = batch_run(unretrofit_utility)
+#' post_df = main_post_model(unretrofit_utility, batch_result$best_result_df)
+#' lean_elec = lean_analysis_ranking(unretrofit_utility, 'Elec')
+#' }
+lean_analysis_ranking <- function(post_df, energy)
 { 
-
   post_df = subset(post_df, post_df$energy_type == energy)
+
+  lean_df = data.frame(bdbid = post_df$bdbid, model_type = post_df$model_type)
+  lean_df$energy_type = energy
+
   lean_name = c('heating_change_point', 'cooling_change_point',
     'heating_sensitivity', 'cooling_sensitivity', 'baseload')
 
@@ -287,11 +280,11 @@ main_numeric_percent_rank <- function(post_df, energy)
       temp[[percent_name]] = 100 - temp[[percent_name]]
     }
 
-    post_df[[numeric_name]] = NULL
-    post_df[[percent_name]] = NULL
+    lean_df[[numeric_name]] = NULL
+    lean_df[[percent_name]] = NULL
 
-    post_df[[numeric_name]][post_df$bdbid %in% temp$bdbid] <- temp[[numeric_name]]
-    post_df[[percent_name]][post_df$bdbid %in% temp$bdbid] <- temp[[percent_name]]
+    lean_df[[numeric_name]][lean_df$bdbid %in% temp$bdbid] <- temp[[numeric_name]]
+    lean_df[[percent_name]][lean_df$bdbid %in% temp$bdbid] <- temp[[percent_name]]
   }
-  return(post_df)
+  return(lean_df)
 }
