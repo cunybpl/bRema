@@ -4,12 +4,14 @@
 \alias{main_post_model}
 \title{Post model calculations}
 \usage{
-main_post_model(utility, best_model)
+main_post_model(utility, best_model, rank_flag = FALSE)
 }
 \arguments{
 \item{utility}{A data frame of \strong{unretrofit data} with multiple buildings, with colums: OAT, usage, energy_type and end_date. See \code{\link{unretrofit_utility}} for data format.}
 
 \item{best_model}{A data frame returns from \code{\link{batch_run}} or \code{\link{batch_run_energy}}.}
+
+\item{rank_flag}{A boolean value. Defaults to \code{FALSE}. If set to \code{TRUE}, \code{\link{lean_analysis_ranking}} function will be called and lean analysis ranking will be performed and added to resulted dataframe from \code{main_post_model}.}
 }
 \description{
 This function transforms best_model in a more meaningful way and returns calculation results after modeller, such as numeric and percent ranks for heating/cooling change-points, heating/cooling sensitivity and baseload.

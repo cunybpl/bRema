@@ -4,7 +4,7 @@
 \alias{post_model_energy}
 \title{Post model calculations for specific energy type}
 \usage{
-post_model_energy(utility, best_model, energy)
+post_model_energy(utility, best_model, energy, rank_flag = FALSE)
 }
 \arguments{
 \item{utility}{A data frame of \strong{unretrofit data} with multiple buildings, with colums: OAT, usage, energy_type and end_date. See \code{\link{unretrofit_utility}} for data format.}
@@ -12,6 +12,8 @@ post_model_energy(utility, best_model, energy)
 \item{best_model}{A data frame returns from \code{\link{batch_run}} or \code{\link{batch_run_energy}}.}
 
 \item{energy}{A character string. Energy Type, either 'Elec' or 'Fuel'.}
+
+\item{rank_flag}{A boolean value. Defaults to \code{FALSE}. If set to \code{TRUE}, \code{\link{lean_analysis_ranking}} function will be called and lean analysis ranking will be performed and lean analysis ranking will be performed and added to resulted dataframe from \code{post_model_energy}.}
 }
 \description{
 This function transforms best_model in a more meaningful way and returns lean analysis calculation results after modeller, such as numeric and percent ranks for heating/cooling change-points, heating/cooling sensitivity and baseload.

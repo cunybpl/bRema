@@ -18,6 +18,6 @@ This function calculates numeric and percent rank for baseload, heating/cooling 
 \dontrun{
 batch_result = batch_run(unretrofit_utility)
 post_df = main_post_model(unretrofit_utility, batch_result$best_result_df)
-lean_elec = lean_analysis_ranking(unretrofit_utility, 'Elec')
+lean_elec = lean_analysis_ranking(post_df, 'Elec')
 }
 }

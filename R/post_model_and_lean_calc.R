@@ -4,18 +4,19 @@
 #' @details If \code{best_model} data frame contains only one energy type, \code{\link{post_model_energy}} can be used instead.
 #' @param utility A data frame of \strong{unretrofit data} with multiple buildings, with colums: OAT, usage, energy_type and end_date. See \code{\link{unretrofit_utility}} for data format.
 #' @param best_model A data frame returns from \code{\link{batch_run}} or \code{\link{batch_run_energy}}.
+#' @param rank_flag A boolean value. Defaults to \code{FALSE}. If set to \code{TRUE}, \code{\link{lean_analysis_ranking}} function will be called and lean analysis ranking will be performed and added to resulted dataframe from \code{main_post_model}.
 #' @export
 #' @examples
 #' \dontrun{
 #' batch_result = batch_run(unretrofit_utility)
 #' post_df = main_post_model(unretrofit_utility, batch_result$best_result_df)}
-main_post_model <- function(utility, best_model)
+main_post_model <- function(utility, best_model, rank_flag = FALSE)
 {
   options(digits=15)
   post_df = data.frame()
   for (energy in as.character(unique(best_model$energy_type)))
   { 
-    temp = post_model_energy(utility, best_model, energy)
+    temp = post_model_energy(utility, best_model, energy, rank_flag)
     post_df = rbind(post_df, temp)
   }
 
@@ -31,12 +32,13 @@ main_post_model <- function(utility, best_model)
 #' @param utility A data frame of \strong{unretrofit data} with multiple buildings, with colums: OAT, usage, energy_type and end_date. See \code{\link{unretrofit_utility}} for data format.
 #' @param best_model A data frame returns from \code{\link{batch_run}} or \code{\link{batch_run_energy}}.
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
+#' @param rank_flag A boolean value. Defaults to \code{FALSE}. If set to \code{TRUE}, \code{\link{lean_analysis_ranking}} function will be called and lean analysis ranking will be performed and lean analysis ranking will be performed and added to resulted dataframe from \code{post_model_energy}.
 #' @export
 #' @examples
 #' \dontrun{
 #' batch_result = batch_run(unretrofit_utility)
 #' post_df_elec = post_model_energy(unretrofit_utility, batch_result$best_result_df, 'Elec')}
-post_model_energy <- function(utility, best_model, energy)
+post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
 { 
   options(digits=15)
   post_df = data.frame()
@@ -54,6 +56,12 @@ post_model_energy <- function(utility, best_model, energy)
   }
   post_df = cbind(post_df, percent_heat_cool_func(post_df$total_consumption, post_df$heat_load, post_df$cool_load))
 
+  if (rank_flag)
+  { 
+    lean_df = lean_analysis_ranking(post_df, energy)
+    lean_df = lean_df[,4:ncol(lean_df)]
+    post_df = cbind(post_df, lean_df)
+  }
   return(post_df)
 }
 
@@ -246,7 +254,7 @@ calc_cool_load <- function(utility, cp, ycp)
 #' \dontrun{
 #' batch_result = batch_run(unretrofit_utility)
 #' post_df = main_post_model(unretrofit_utility, batch_result$best_result_df)
-#' lean_elec = lean_analysis_ranking(unretrofit_utility, 'Elec')
+#' lean_elec = lean_analysis_ranking(post_df, 'Elec')
 #' }
 lean_analysis_ranking <- function(post_df, energy)
 { 
