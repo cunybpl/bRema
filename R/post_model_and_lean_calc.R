@@ -288,8 +288,8 @@ lean_analysis_ranking <- function(post_df, energy)
       temp[[percent_name]] = 100 - temp[[percent_name]]
     }
 
-    lean_df[[numeric_name]] = NULL
-    lean_df[[percent_name]] = NULL
+    lean_df[[numeric_name]] = NA
+    lean_df[[percent_name]] = NA
 
     lean_df[[numeric_name]][lean_df$bdbid %in% temp$bdbid] <- temp[[numeric_name]]
     lean_df[[percent_name]][lean_df$bdbid %in% temp$bdbid] <- temp[[percent_name]]
