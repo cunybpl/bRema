@@ -4,7 +4,7 @@
 \alias{plot_model}
 \title{Handles plotting lines for parameter models}
 \usage{
-plot_model(x, model, B, cp1, cp2, energy, pre_key = 1, unit, p1 = plot_ly())
+plot_model(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = plot_ly())
 }
 \arguments{
 \item{x}{A vector (OAT).}
@@ -19,7 +19,7 @@ plot_model(x, model, B, cp1, cp2, energy, pre_key = 1, unit, p1 = plot_ly())
 
 \item{energy}{A character string. Energy type, either 'Elec' or 'Fuel'.}
 
-\item{pre_key}{A numeric value. 1 for unretrofit/pre-retrofit and 3 for post-retrofit. Defaults to 1.}
+\item{pre_key}{A numeric value. 0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit. Defaults to 0.}
 
 \item{unit}{A boolean value. Determines whether or not to convert kWh to BTU.}
 

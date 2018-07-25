@@ -15,9 +15,9 @@ plot_timeseries(util, energy)
 This function plots time series graph for date against usage and OAT. This function can be used for both retrofit and unretrofit data.
 }
 \examples{
-util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
+\dontrun{util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
 			& unretrofit_utility$energy_type == 'Elec')
-plot_timeseries(util, 'Elec')
+plot_timeseries(util, 'Elec')}
 }
 \seealso{
 \code{\link{plot_point}} and \code{\link{main_line_point_plot}}

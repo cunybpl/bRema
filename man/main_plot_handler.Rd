@@ -7,7 +7,7 @@
 main_plot_handler(util, best_model, energy, b_name = "")
 }
 \arguments{
-\item{util}{A data frame with columns: OAT, usage and estimated (1 for estimated usage and 0 for actual usage). See \code{\link{unretrofit_utility}} for more information about data format.}
+\item{util}{A data frame with columns: OAT, usage, estimated (1 for estimated usage and 0 for actual usage) and prepost (0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit). If there is no prepost column, a column of zero will be added as prepost column. See \code{\link{unretrofit_utility}} for more information about data format.}
 
 \item{best_model}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
 

@@ -1,7 +1,7 @@
 #' Handles plotting parameter models
 #' 
 #' This function handles the general scheme of plotting parameters model by using plotly. Uses \code{main_line_point_plot} and \code{plot_point} functions to handle and draw graphs.
-#' @param util A data frame with columns: OAT, usage and estimated (1 for estimated usage and 0 for actual usage). See \code{\link{unretrofit_utility}} for more information about data format.
+#' @param util A data frame with columns: OAT, usage, estimated (1 for estimated usage and 0 for actual usage) and prepost (0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit). If there is no prepost column, a column of zero will be added as prepost column. See \code{\link{unretrofit_utility}} for more information about data format.
 #' @param best_model A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
 #' @param b_name Plot title (Building Name or Buidling ID). Defaults to an empty string.
@@ -14,7 +14,13 @@ main_plot_handler <- function(util, best_model, energy, b_name = '')
   x1 = util$OAT
   y1 = util$usage
   temp_est = util$estimated
-  pre_key = unique(util$prepost)
+  if (is.null(util$prepost))
+  {
+    pre_key = 0
+  }else
+  {
+    pre_key = unique(util$prepost)
+  }
   
   z1 = c(1:length(temp_est))
   z1[temp_est == 1] <- 'Est'
@@ -39,11 +45,11 @@ main_plot_handler <- function(util, best_model, energy, b_name = '')
 #' @param df A data frame with columns: x, y, z (OAT, usage, estimated from utillity data frame). Column 'z' must be a character column with 'Est' for estimated (or 1) and 'Act' for acutal (or 0).
 #' @param best_model A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
-#' @param pre_key A numeric value. 1 for unretrofit/pre-retrofit and 3 for post-retrofit. Defaults to 1.
+#' @param pre_key A numeric value. 0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit. Defaults to 0.
 #' @param b_name Plot title (Building Name or Buidling ID).
 #' @export
 #' @seealso \code{\link{plot_point}} and \code{\link{main_plot_handler}}
-main_line_point_plot <- function(df, best_model, energy, pre_key = 1, b_name)
+main_line_point_plot <- function(df, best_model, energy, pre_key = 0, b_name)
 {   
 	#require(plotly)
     B = best_model$params #not params, just ycp, and slope(s)
@@ -62,12 +68,12 @@ main_line_point_plot <- function(df, best_model, energy, pre_key = 1, b_name)
 #' This function returns a scatter plot.
 #' @param df A data frame with columns: x, y, z (OAT, usage, estimated from utillity data frame)
 #' @param energy A character string. Energy Type, 'Elec' or 'Fuel'.
-#' @param pre_key A numeric value. 1 for unretrofit/pre-retrofit and 3 for post-retrofit. Defaults to 1.
+#' @param pre_key A numeric value. 0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit. Defaults to 0.
 #' @param model_fig A plotly object. Defaults to \code{plot_ly()}.
 #' @param b_name Plot title (Building Name or Buidling ID). Defaults to an empty string.
 #' @export
 #' @seealso \code{\link{plot_model}}
-plot_point <- function(df, energy, pre_key = 1, model_fig = plot_ly(), b_name = '')
+plot_point <- function(df, energy, pre_key = 0, model_fig = plot_ly(), b_name = '')
 { 
   #require(plotly)
   util_act = subset(df, df$z == 'Act')
@@ -87,13 +93,13 @@ plot_point <- function(df, energy, pre_key = 1, model_fig = plot_ly(), b_name = 
   switch(as.character(energy),
         'Elec' = 
         {
-          if(pre_key == 1)
+          if(pre_key == 1 |  pre_key == 0)
           {color_n = 'rgba(51, 113, 213, 1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
           y_title = "Usage (kWh)"
         },
         'Fuel' = 
         {
-          if(pre_key == 1)
+          if(pre_key == 1 |  pre_key == 0)
           {color_n = 'rgba(240, 24, 28,1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
           y_title = "Usage (BTU)"
         }
@@ -124,12 +130,12 @@ plot_point <- function(df, energy, pre_key = 1, model_fig = plot_ly(), b_name = 
 #' @param cp1 A numeric value. If there are two change-points, this is the leftmost change-point.
 #' @param cp2 A numeric value. If there are two change-points, this is the rightmost change-point. If there is only one change-point, set this to be zero. 
 #' @param energy A character string. Energy type, either 'Elec' or 'Fuel'.
-#' @param pre_key A numeric value. 1 for unretrofit/pre-retrofit and 3 for post-retrofit. Defaults to 1.
+#' @param pre_key A numeric value. 0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit. Defaults to 0.
 #' @param unit A boolean value. Determines whether or not to convert kWh to BTU.
 #' @param p1 A plotly object. Defaults to \code{plot_ly()}.
 #' @export
 #' @seealso \code{\link{plot_point}}
-plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 1, unit, p1 = plot_ly())
+plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = plot_ly())
 { 
   options(digits=15)
   #require(plotly)
@@ -210,12 +216,12 @@ plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 1, unit, p1 = pl
   switch(as.character(energy), 
           'Elec' = 
           {
-            if(pre_key == 1)
+            if(pre_key == 1 |  pre_key == 0)
             {color_n = 'rgba(51, 113, 213, 1)'}else{color_n = 'rgba(109, 203, 15, 1)'}
           },
           'Fuel' = 
           {
-            if(pre_key == 1){color_n = 'rgba(240, 24, 28,1)'}
+            if(pre_key == 1 |  pre_key == 0){color_n = 'rgba(240, 24, 28,1)'}
             else{color_n = 'rgba(109, 203, 15, 1)'}
           }
     )
@@ -234,9 +240,9 @@ plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 1, unit, p1 = pl
 #' @export
 #' @seealso \code{\link{plot_point}} and \code{\link{main_line_point_plot}}
 #' @examples
-#' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
+#' \dontrun{util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
 #'				& unretrofit_utility$energy_type == 'Elec')
-#' plot_timeseries(util, 'Elec')
+#' plot_timeseries(util, 'Elec')}
 plot_timeseries <- function(util, energy)
 { 
   #require(plotly)
