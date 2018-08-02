@@ -18,7 +18,7 @@ run_model_retrofit <- function(util, plot_flag = FALSE, step = 0.5, n_pre = 4, n
 {
   pre_util = subset(util, util$prepost == 1)
   post_util = subset(util, util$prepost == 3)
-  return(list(pre = run_model(pre_util, plot_flag = plot_flag, step = step, n_pre),
+  return(list(pre = run_model(pre_util, plot_flag = plot_flag, step = step, n_pre, unretrofit_flag = FALSE),
           post = run_model(post_util, plot_flag = plot_flag, step = step, n_post)))
 }
 

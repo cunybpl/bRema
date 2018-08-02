@@ -4,7 +4,8 @@
 \alias{run_model}
 \title{Calculates and graphs parameter based models}
 \usage{
-run_model(util, plot_flag = FALSE, step = 0.5, n = 4)
+run_model(util, plot_flag = FALSE, step = 0.5, n = 4,
+  unretrofit_flag = TRUE)
 }
 \arguments{
 \item{util}{A data frame with columns columns: energy_type, OAT, usage and estimated (1 for estimated usage and 0 for actual usage). See \code{\link{unretrofit_utility}} for more information about data format.}
@@ -14,6 +15,8 @@ run_model(util, plot_flag = FALSE, step = 0.5, n = 4)
 \item{step}{A single numeric value or a vector. If it is a single numeric value, \code{create_model} will be used to find change-point(s). If it is a vector with more than one component, \code{create_model_2} will be used. Defaults to 0.5. Adjust \code{step}-size depending on independent varaiables.}
 
 \item{n}{A numeric value that determines threshold for population test: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.}
+
+\item{unretrofit_flag}{A boolean value to indicate whether it is retrofit or unretrofit. Defaults to \code{TRUE}. This only affects parameter model graph's legend labels.}
 }
 \description{
 This function returns parameters, stats, change-point(s), and parameter model graphs using \code{create_model} function.

@@ -458,6 +458,7 @@ ftest <- function(SSE_L, SSE_M, n) #RSS residual sum squares == SSE sum squares 
 #' @param plot_flag A boolean value. Defaults to \code{FALSE}. If set to \code{FALSE}, it will not return any plots.
 #' @param step A single numeric value or a vector. If it is a single numeric value, \code{create_model} will be used to find change-point(s). If it is a vector with more than one component, \code{create_model_2} will be used. Defaults to 0.5. Adjust \code{step}-size depending on independent varaiables.
 #' @param n A numeric value that determines threshold for population test: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
+#' @param unretrofit_flag A boolean value to indicate whether it is retrofit or unretrofit. Defaults to \code{TRUE}. This only affects parameter model graph's legend labels.
 #' @export
 #' @seealso \code{\link{create_model}}, \code{\link{create_model_2}}, \code{\link{run_model_retrofit}}, \code{\link{unretrofit_utility}} and \code{\link{retrofit_utility}}
 #' @examples
@@ -471,7 +472,7 @@ ftest <- function(SSE_L, SSE_M, n) #RSS residual sum squares == SSE sum squares 
 #' pre_result = run_model(pre_util) #result for pre-retrofit data
 #' post_util = subset(retrofit_util, retrofit_util$prepost == 3)#subset post-retrofit utility data
 #' post_result = run_model(post_util) #result for post-retrofit data}
-run_model <- function(util, plot_flag = FALSE, step = 0.5, n = 4)
+run_model <- function(util, plot_flag = FALSE, step = 0.5, n = 4, unretrofit_flag = TRUE)
 {	
 	#require(plotly)
 	options(digits=15)
@@ -513,7 +514,7 @@ run_model <- function(util, plot_flag = FALSE, step = 0.5, n = 4)
 		bestvalue = switch(as.character(length(step)), '1' = create_model(x,y,model, step = step),
 			create_model_2(x,y,model, step = step))
 		bestvalue[['stat_test']]= model_test(x, bestvalue, model, n) 
-		if (plot_flag){bestvalue[['figure']] = main_plot_handler(util, bestvalue, energy, b_name)}
+		if (plot_flag){bestvalue[['figure']] = main_plot_handler(util, bestvalue, energy, b_name, unretrofit_flag)}
 		final_best[[model]] = bestvalue
 	}
 	

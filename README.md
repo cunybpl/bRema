@@ -1,5 +1,4 @@
 # bRema: Building Energy Modeling and Analysis in R
----
 [![Build Status](https://travis-ci.org/tinnaing347/bRema.svg?branch=master)](https://travis-ci.org/tinnaing347/bRema.svg?branch=master)
 ## Overview
 **bRema** is Building Energy Modeling and Analysis package developed in R by **CUNY Building Performance Lab**. bRema allows users to call multiple functions and build desired temperature dependent change-point models from scratch and use their own statistical threshold for choosing the best model. Also, one can take advantage of built-in plotting functions to visualize models and perform additional statistical analysis using built-in stats functions. Moreover, bRema can model both retrofitted and unretrofitted building energy data.
@@ -33,11 +32,12 @@ util <- data.frame(OAT = x, usage = y, energy_type = 'Elec')
 result = bRema::run_model(util, plot_flag = TRUE)
 #finding the best fitted model
 best_model_list = bRema::main_best_model_func(result, energy_n = 'Elec')
+best_model_list$figure
 ```
-![Image of best model](https://github.com/tinnaing347/bRema/blob/master/man/figures/readme_example_plot_1.png)
+![](https://github.com/tinnaing347/bRema/blob/master/man/figures/readme_example_plot_1.png "A 3PC model for electricity")
 
 If one has a dataset of multiple buildings energy usage similar to sample data provided in the package, one can use `bRema::batch_run` function to  batch run multiple buildings and perform more analysis.
-```
+```r
 library(bRema)
 #batch running and modelling
 batch_result = batch_run(unretrofit_utility)

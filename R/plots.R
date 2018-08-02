@@ -1,27 +1,28 @@
 #' Handles plotting parameter models
 #' 
 #' This function handles the general scheme of plotting parameters model by using plotly. Uses \code{main_line_point_plot} and \code{plot_point} functions to handle and draw graphs.
-#' @param util A data frame with columns: OAT, usage, estimated (1 for estimated usage and 0 for actual usage) and prepost (0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit). If there is no prepost column, a column of zero will be added as prepost column. See \code{\link{unretrofit_utility}} for more information about data format.
+#' @param util A data frame with columns: OAT, usage, estimated (1 for estimated usage and 0 for actual usage) and prepost (1 for unretrofit and pre-retrofit and 3 for post-retrofit). See \code{\link{unretrofit_utility}} for more information about data format.
 #' @param best_model A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
 #' @param b_name Plot title (Building Name or Buidling ID). Defaults to an empty string.
+#' @param unretrofit_flag A boolean value to indicate whether it is retrofit or unretrofit. Defaults to \code{TRUE}. If it is retrofit, set this to \code{FALSE}. This only affects parameter model graph's legend labels.
 #' @import plotly
 #' @export
 #' @seealso \code{\link{plot_point}} and \code{\link{main_line_point_plot}}
-main_plot_handler <- function(util, best_model, energy, b_name = '')
+main_plot_handler <- function(util, best_model, energy, b_name = '', unretrofit_flag = TRUE)
 { 
   #require(plotly)
   x1 = util$OAT
   y1 = util$usage
   temp_est = util$estimated
-  if (is.null(util$prepost))
+
+  pre_key = unique(util$prepost)
+
+  if (unretrofit_flag)
   {
     pre_key = 0
-  }else
-  {
-    pre_key = unique(util$prepost)
   }
-  
+
   z1 = c(1:length(temp_est))
   z1[temp_est == 1] <- 'Est'
   z1[temp_est != 1] <- 'Act'

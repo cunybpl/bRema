@@ -4,16 +4,19 @@
 \alias{main_plot_handler}
 \title{Handles plotting parameter models}
 \usage{
-main_plot_handler(util, best_model, energy, b_name = "")
+main_plot_handler(util, best_model, energy, b_name = "",
+  unretrofit_flag = TRUE)
 }
 \arguments{
-\item{util}{A data frame with columns: OAT, usage, estimated (1 for estimated usage and 0 for actual usage) and prepost (0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit). If there is no prepost column, a column of zero will be added as prepost column. See \code{\link{unretrofit_utility}} for more information about data format.}
+\item{util}{A data frame with columns: OAT, usage, estimated (1 for estimated usage and 0 for actual usage) and prepost (1 for unretrofit and pre-retrofit and 3 for post-retrofit). See \code{\link{unretrofit_utility}} for more information about data format.}
 
 \item{best_model}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
 
 \item{energy}{A character string. Energy Type, either 'Elec' or 'Fuel'.}
 
 \item{b_name}{Plot title (Building Name or Buidling ID). Defaults to an empty string.}
+
+\item{unretrofit_flag}{A boolean value to indicate whether it is retrofit or unretrofit. Defaults to \code{TRUE}. If it is retrofit, set this to \code{FALSE}. This only affects parameter model graph's legend labels.}
 }
 \description{
 This function handles the general scheme of plotting parameters model by using plotly. Uses \code{main_line_point_plot} and \code{plot_point} functions to handle and draw graphs.
