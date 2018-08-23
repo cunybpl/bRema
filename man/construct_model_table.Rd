@@ -23,6 +23,11 @@ construct_model_table(best_result, bdbid = NA, energy, fiscal_year = NA,
 \description{
 This functions returns a data frame given a nested list of individual model result.
 }
+\section{Note}{
+
+If more than half of energy usage points of a facility are zeros, that faciltiy will be skipped.
+}
+
 \examples{
 
 util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
