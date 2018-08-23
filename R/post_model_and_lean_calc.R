@@ -87,7 +87,10 @@ post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
 post_model_prelimanary <- function(util, best_df, bdbid_n = NA, energy)
 { 
   options(digits=15)
-  util$end_date = strptime(util$end_date, format = "%Y-%m-%d")
+  if(!is.POSIXlt(util$end_date) & !is.POSIXt(util$end_date) & !is.POSIXct(util$end_date))
+  {
+    util$end_date = strptime(util$end_date, format = "%Y-%m-%d")
+  }
   util$day = as.numeric(format(util$end_date, format = "%d"))
 
   df = data.frame(bdbid = bdbid_n, energy_type = energy)

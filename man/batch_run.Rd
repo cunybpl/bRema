@@ -35,6 +35,11 @@ A list with components:
 \description{
 This function run batches given a utility data frame of \strong{unretrofit data}. See \code{\link{unretrofit_utility}.}
 }
+\section{Note}{
+
+If more than half of energy usage points of a facility are zeros, that faciltiy will be skipped.
+}
+
 \examples{
 \dontrun{
 batch_result = batch_run(unretrofit_utility)

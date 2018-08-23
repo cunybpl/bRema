@@ -18,12 +18,14 @@
 #' B = least_squares(xmat, temp$y)
 least_squares <- function (xmat, ymat) # B = [b1 b2 b3], b1 = coeff, b2 = slope 1, b3 = slope 2
 {	
-	options(digits=15)
+	options(digits=10)
 	A = t(xmat) %*% xmat
 	G = t(xmat) %*% ymat
-	if (det(A))
+
+	Ainv = tryCatch(solve(A), error = function(e){0})
+	if (is.matrix(Ainv))
 	{
-		B = solve(A) %*% G
+		B = Ainv %*% G
 	}else
 	{
 		B = matrix(0, nrow = 2) #or just set this to zero???
@@ -335,12 +337,9 @@ create_model <- function (x, y, model, step = 0.5)
 				}
 			}else #5P starts and "for loops" for not 5P ends here
 			{
-			  #print('cp1')
-			  #print(cp1)
+			  
 				for (cp2 in seq(cp1, high_temp, by = step))
 				{
-				  #print('cp2')
-				  #print(cp2)
 					test_value = test_model(model, x,y, cp1, cp2)
 					if (test_value$stats[1,1] < bestvalue$stats[1,1])
 					{	
@@ -461,6 +460,8 @@ ftest <- function(SSE_L, SSE_M, n) #RSS residual sum squares == SSE sum squares 
 #' @param unretrofit_flag A boolean value to indicate whether it is retrofit or unretrofit. Defaults to \code{TRUE}. This only affects parameter model graph's legend labels.
 #' @export
 #' @seealso \code{\link{create_model}}, \code{\link{create_model_2}}, \code{\link{run_model_retrofit}}, \code{\link{unretrofit_utility}} and \code{\link{retrofit_utility}}
+#' @section Note:
+#' If more than half of usage points (dependent variables) of input data frame are zeros, error message will be generated.
 #' @examples
 #' \dontrun{
 #' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
@@ -476,6 +477,9 @@ run_model <- function(util, plot_flag = FALSE, step = 0.5, n = 4, unretrofit_fla
 {	
 	#require(plotly)
 	options(digits=15)
+
+	if(check_zeros(util)){stop("More than half of usage (dependent variables)
+							data points of input dataframe are zero.")}
 	final_best = list()
 
 	if (is.null(util$bdbid))
@@ -1113,6 +1117,8 @@ batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FA
 #' \item{best_result_df}{A data frame of best models of mulitple buildings. If a building does not model, it will not be shown in this data frame.}
 #' \item{plot_list}{A list containing plots. If \code{plot_flag} is set to \code{FALSE}, this will be an empty list.}
 #' @export
+#' @section Note:
+#' If more than half of energy usage points of a facility are zeros, that faciltiy will be skipped.
 #' @examples
 #' \dontrun{
 #' batch_result = batch_run(unretrofit_utility)
@@ -1129,6 +1135,11 @@ batch_run <- function(utility, metric_flag = TRUE, plot_flag = FALSE, step = 0.5
     						Rsquared_elec,CV_RMSE_fuel, Rsquared_fuel, n)
     result$best_result_df = rbind(result$best_result_df,temp$best_result_df)
     result$plot_list = append(result$plot_list, temp$plot_list)
+  }
+  if(is.null(result$best_result_df) | length(result$best_result_df) == 0)
+  {	
+  	print("No faciltiy is modelled. Retruning NULL.")
+  	return(NULL)
   }
   result$best_result_df = result$best_result_df[order(result$best_result_df[,'bdbid'],
                                   result$best_result_df[,'energy_type']),]
@@ -1147,6 +1158,8 @@ batch_run <- function(utility, metric_flag = TRUE, plot_flag = FALSE, step = 0.5
 #' @param n number of observed points (independent variable) in utility data frame of a building. Defaults to \code{NA}.
 #' @param prepost A numeric value. Defaults to be 1. This indicates if it is unretrofit or retrofit. See \code{\link{unretrofit_utility}} for more information about prepost.
 #' @export
+#' @section Note:
+#' If more than half of energy usage points of a facility are zeros, that faciltiy will be skipped.
 #' @examples
 #' 
 #' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'

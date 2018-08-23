@@ -48,4 +48,4 @@ post_df = main_post_model(unretrofit_utility, best_model_df, rank_flag = TRUE)
 ```
 License
 ----
-MIT
+This project is licensed under the MIT License.

@@ -26,6 +26,11 @@ This function can be used for both retrofit and unretrofit data.
 However, if you want to run this function with retrofit data, \code{subset} or \code{filter} the data first by prepost.
 If input \code{util} data frame is not in the exact format as \code{\link{unretrofit_utility}}, change independent varaible column to 'OAT' and dependent variable to 'usage', add 'energy_type' column and set all the values to either 'Fuel' or 'Elec'. If 'estimated' is column is not present, a column of ones will be added automatically.
 }
+\section{Note}{
+
+If more than half of usage points (dependent variables) of input data frame are zeros, error message will be generated.
+}
+
 \examples{
 \dontrun{
 util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
