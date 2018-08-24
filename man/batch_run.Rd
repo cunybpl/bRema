@@ -6,7 +6,7 @@
 \usage{
 batch_run(utility, metric_flag = TRUE, plot_flag = FALSE, step = 0.5,
   CV_RMSE_elec = 25, Rsquared_elec = 0.75, CV_RMSE_fuel = 50,
-  Rsquared_fuel = 0.75, n = 4)
+  Rsquared_fuel = 0.75, n = 4, all_model_flag = FALSE)
 }
 \arguments{
 \item{utility}{A utility data frame of \strong{unretrofit data}with multiple buildings.}
@@ -26,11 +26,14 @@ batch_run(utility, metric_flag = TRUE, plot_flag = FALSE, step = 0.5,
 \item{Rsquared_fuel}{A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.}
 
 \item{n}{A numeric value that determines threshold for population test: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.}
+
+\item{all_model_flag}{A boolean value. Defaults to \code{FALSE}. If set to \code{TRUE}, information of all models (i.e not just the best model) of a building will be put into a dataframe.}
 }
 \value{
 A list with components:
 \item{best_result_df}{A data frame of best models of mulitple buildings. If a building does not model, it will not be shown in this data frame.}
 \item{plot_list}{A list containing plots. If \code{plot_flag} is set to \code{FALSE}, this will be an empty list.}
+\item{all_model_df}{A data frame of all models of multiple buildings. If \code{all_model_flag} is set to \code{FALSE}, this will be an empty data frame.}
 }
 \description{
 This function run batches given a utility data frame of \strong{unretrofit data}. See \code{\link{unretrofit_utility}.}

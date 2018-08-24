@@ -1063,9 +1063,11 @@ calc_nac <- function(best_result, norm_temp = NULL)
 #' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 50.
 #' @param Rsquared_fuel A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.
 #' @param n A numeric value that determines threshold for population test: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
+#' @param all_model_flag A boolean value. Defaults to \code{FALSE}. If set to \code{TRUE}, information of all models (i.e not just the best model) of a building will be put into a dataframe.
 #' @return A list with components:
-#' \item{best_result_df}{A data frame of best models of mulitple buildings. If a building does not model, it will not be shown in this data frame.}
+#' \item{best_result_df}{A data frame of best models of multiple buildings. If a building does not model, it will not be shown in this data frame.}
 #' \item{plot_list}{A list containing plots. If \code{plot_flag} is set to \code{FALSE}, this will be an empty list.}
+#' \item{all_model_df}{A data frame of all models of multiple buildings. If \code{all_model_flag} is set to \code{FALSE}, this will be an empty data frame.}
 #' @export
 #' @examples
 #' \dontrun{
@@ -1073,17 +1075,29 @@ calc_nac <- function(best_result, norm_temp = NULL)
 #' }
 batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FALSE, step = 0.5,
 							CV_RMSE_elec = 25, Rsquared_elec = 0.75, CV_RMSE_fuel = 50, 
-							Rsquared_fuel = 0.75, n = 4)
+							Rsquared_fuel = 0.75, n = 4, all_model_flag = FALSE)
 {
   utility = subset(utility, utility$energy_type == energy)
   plot_list = list()
   best_result_df = data.frame()
+  all_model_df = data.frame()
   fiscal_year = max(unique(utility$fiscal_year))
   for (bdbid_n in unique(utility$bdbid))
   {	
     util = subset(utility, utility$bdbid == bdbid_n)
+    points = nrow(util)
     if(check_zeros(util)){next}
-    best_result = main_best_model_func(run_model(util, plot_flag = plot_flag, step = step, n = n),
+    inter_result = run_model(util, plot_flag = plot_flag, step = step, n = n)
+
+    if(all_model_flag)
+    {
+    	temp_all_model_df = construct_all_model(inter_result, bdbid_n, energy,
+    											fiscal_year, points,
+    											prepost = 1)
+    	all_model_df = rbind(all_model_df, temp_all_model_df)
+    }
+
+    best_result = main_best_model_func(inter_result,
     									energy, metric_flag, CV_RMSE_elec,
     									Rsquared_elec, CV_RMSE_fuel,
     									Rsquared_fuel)
@@ -1093,12 +1107,19 @@ batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FA
       {
       	plot_list[[energy]][[as.character(bdbid_n)]] = best_result$figure
       }
-      temp = construct_model_table(best_result, bdbid_n, energy, fiscal_year, nrow(util),
+
+      if(all_model_flag)
+      {	
+      	temp = subset(temp_all_model_df, temp_all_model_df$model_type == best_result$model)
+      }else
+      {
+      	temp = construct_model_table(best_result, bdbid_n, energy, fiscal_year, points,
       								prepost = 1)
+      }
       best_result_df = rbind(best_result_df, temp)
     }
   }
-  return(list(best_result_df = best_result_df, plot_list = plot_list))
+  return(list(best_result_df = best_result_df, plot_list = plot_list, all_model_df = all_model_df))
 }
 
 #' Batch run for both energy type (unretrofit)
@@ -1113,9 +1134,11 @@ batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FA
 #' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 50.
 #' @param Rsquared_fuel A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.
 #' @param n A numeric value that determines threshold for population test: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
+#' @param all_model_flag A boolean value. Defaults to \code{FALSE}. If set to \code{TRUE}, information of all models (i.e not just the best model) of a building will be put into a dataframe.
 #' @return A list with components:
 #' \item{best_result_df}{A data frame of best models of mulitple buildings. If a building does not model, it will not be shown in this data frame.}
 #' \item{plot_list}{A list containing plots. If \code{plot_flag} is set to \code{FALSE}, this will be an empty list.}
+#' \item{all_model_df}{A data frame of all models of multiple buildings. If \code{all_model_flag} is set to \code{FALSE}, this will be an empty data frame.}
 #' @export
 #' @section Note:
 #' If more than half of energy usage points of a facility are zeros, that faciltiy will be skipped.
@@ -1125,22 +1148,36 @@ batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FA
 #' }
 batch_run <- function(utility, metric_flag = TRUE, plot_flag = FALSE, step = 0.5,
 						CV_RMSE_elec = 25, Rsquared_elec = 0.75, CV_RMSE_fuel = 50, 
-						Rsquared_fuel = 0.75, n =4)
+						Rsquared_fuel = 0.75, n =4, all_model_flag = FALSE)
 { 
-  result = list(best_result_df = data.frame(), plot_list = list())
+  result = list(best_result_df = data.frame(), plot_list = list(), all_model_df = data.frame())
   for (energy in as.character(unique(utility$energy_type)))
   {
     temp = batch_run_energy(utility, energy, metric_flag = metric_flag,
     						plot_flag = plot_flag, step = step, CV_RMSE_elec,
-    						Rsquared_elec,CV_RMSE_fuel, Rsquared_fuel, n)
+    						Rsquared_elec,CV_RMSE_fuel, Rsquared_fuel, n, all_model_flag)
     result$best_result_df = rbind(result$best_result_df,temp$best_result_df)
     result$plot_list = append(result$plot_list, temp$plot_list)
+    if (all_model_flag)
+    {	
+    	result$all_model_df = rbind(result$all_model_df, temp$all_model_df)
+    }
   }
+
+  if(all_model_flag)
+  {
+  	result$all_model_df = result$all_model_df[order(result$all_model_df[,'bdbid'],
+                                  result$all_model_df[,'energy_type']),]
+  	rownames(result$all_model_df) = c(1:nrow(result$all_model_df))
+  }
+
   if(is.null(result$best_result_df) | length(result$best_result_df) == 0)
   {	
-  	print("No faciltiy is modelled. Retruning NULL.")
-  	return(NULL)
+  	print("No faciltiy is modelled. Returning NULL.")
+  	print("If you have set all_model_flag to TRUE, see all_model_df for more information about models.")
+  	return(result)
   }
+
   result$best_result_df = result$best_result_df[order(result$best_result_df[,'bdbid'],
                                   result$best_result_df[,'energy_type']),]
   rownames(result$best_result_df) = c(1:nrow(result$best_result_df))
