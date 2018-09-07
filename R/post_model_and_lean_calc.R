@@ -73,6 +73,7 @@ post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
 #' @param bdbid_n Building id, which identifies the building or the dataset. Defaults to \code{NA}.
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
 #' @export
+#' @import lubridate
 #' @examples
 #' \dontrun{
 #' bdbid_n = 'f3acce86'
