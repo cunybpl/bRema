@@ -47,7 +47,7 @@ post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
   options(digits=15)
   post_df = data.frame()
 
-  if(is.factor(.subset2(df, 'model_type')[1]))
+  if(is.factor(.subset2(best_model, 'model_type')[1]))
   {
     best_model$energy_type = as.character(best_model$energy_type)
     best_model$model_type = as.character(best_model$model_type)

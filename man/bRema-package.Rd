@@ -4,7 +4,7 @@
 \name{bRema-package}
 \alias{bRema}
 \alias{bRema-package}
-\title{bRema: Calculate and graph parameter based models for building energy usage}
+\title{bRema: Building Energy Modelling and Analysis tool in R}
 \description{
 Given a dataframe of outside air temperature, and energy usage (i.e utility data),
 it will calculate parameters based model and graph them by using plotly.
