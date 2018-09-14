@@ -248,6 +248,19 @@ plot_timeseries <- function(util, energy)
   #require(plotly)
   options(digits=15)
 
+  if(!is.POSIXlt(util$end_date) & !is.POSIXt(util$end_date) & !is.POSIXct(util$end_date))
+  { 
+    if (grepl('/', util$end_date[1]))
+    {
+      util$end_date = strptime(util$end_date, format = "%m/%d/%y")
+    }else
+    {
+      util$end_date = strptime(util$end_date, format = "%Y-%m-%d")
+    }
+  }
+
+  util$end_date = as.factor(util$end_date) 
+
   util$estimated[util$estimated == 1] <- 'Est'
   util$estimated[util$estimated != 'Est'] <- 'Act'
 
