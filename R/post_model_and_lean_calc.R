@@ -13,8 +13,12 @@
 main_post_model <- function(utility, best_model, rank_flag = FALSE)
 {
   options(digits=15)
+
+  best_model$energy_type = as.character(best_model$energy_type)
+  best_model$model_type = as.character(best_model$model_type)
+
   post_df = data.frame()
-  for (energy in as.character(unique(best_model$energy_type)))
+  for (energy in unique(best_model$energy_type))
   { 
     temp = post_model_energy(utility, best_model, energy, rank_flag)
     post_df = rbind(post_df, temp)
@@ -42,6 +46,12 @@ post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
 { 
   options(digits=15)
   post_df = data.frame()
+
+  if(is.factor(.subset2(df, 'model_type')[1]))
+  {
+    best_model$energy_type = as.character(best_model$energy_type)
+    best_model$model_type = as.character(best_model$model_type)
+  }
 
   utility = subset(utility, utility$energy_type == energy)
   best_model = subset(best_model, best_model$energy_type == energy)
@@ -89,9 +99,16 @@ post_model_prelimanary <- function(util, best_df, bdbid_n = NA, energy)
 { 
   options(digits=15)
   if(!is.POSIXlt(util$end_date) & !is.POSIXt(util$end_date) & !is.POSIXct(util$end_date))
-  {
-    util$end_date = strptime(util$end_date, format = "%Y-%m-%d")
+  { 
+    if (grepl('/', util$end_date[1]))
+    {
+      util$end_date = strptime(util$end_date, format = "%m/%d/%y")
+    }else
+    {
+      util$end_date = strptime(util$end_date, format = "%Y-%m-%d")
+    }
   }
+  
   util$day = as.numeric(format(util$end_date, format = "%d"))
 
   df = data.frame(bdbid = bdbid_n, energy_type = energy)
@@ -101,14 +118,14 @@ post_model_prelimanary <- function(util, best_df, bdbid_n = NA, energy)
 
   df$ycp= .subset2(best_df, 'ycp')[1]
 
-  df = cbind(df, heat_cool_sen_change(best_df, as.character(.subset2(df, 'model_type')[1]),
+  df = cbind(df, heat_cool_sen_change(best_df, .subset2(df, 'model_type')[1],
                 energy))
 
   df$total_consumption = sum(util$usage * util$day)
 
   df = cbind(df, main_heat_cool_load(util,
               .subset2(df, 'heating_change_point')[1], .subset2(df,'cooling_change_point')[1],
-              .subset2(df,'ycp')[1], as.character(.subset2(df,'model_type')[1])))
+              .subset2(df,'ycp')[1], .subset2(df,'model_type')[1]))
 
   #df = cbind(df, percent_heat_cool_func(.subset2(df, 'total_consumption')[1],
   #             .subset2(df, 'heat_load')[1], .subset2(df, 'cool_load')[1]))

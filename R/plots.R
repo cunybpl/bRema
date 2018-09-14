@@ -31,12 +31,11 @@ main_plot_handler <- function(util, best_model, energy, b_name = '', unretrofit_
 
   if (is.null(best_model) | length(best_model) == 0)
   {
-    final_figure = plot_point(df = df1, energy = energy, pre_key = pre_key, model_fig = plot_ly(), b_name = b_name)
+    return(plot_point(df = df1, energy = energy, pre_key = pre_key, model_fig = plot_ly(), b_name = b_name))
   }else
   {
-    final_figure = main_line_point_plot(df1, best_model, energy, pre_key, b_name)
+    return(main_line_point_plot(df1, best_model, energy, pre_key, b_name))
   }
-  return(final_figure)
 }
 
 
@@ -250,7 +249,7 @@ plot_timeseries <- function(util, energy)
   options(digits=15)
 
   util$estimated[util$estimated == 1] <- 'Est'
-  util$estimated[util$estimated != 1] <- 'Act'
+  util$estimated[util$estimated != 'Est'] <- 'Act'
 
 
   util_act = subset(util, util$estimated == 'Act')

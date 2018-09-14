@@ -125,15 +125,14 @@ make_matrix <- function (xsplit)
 		temp = matrix(1:nrow(xsplit))
 		temp[c1 !=0 | c2 != 0] <- 1
 		temp[c1 ==0 & c2 == 0] <- 0
-		final_matrix = cbind(temp,c1,c2)
+		return(cbind(temp,c1,c2))
 	}else
 	{	
 		temp = matrix(1:nrow(xsplit))
 		temp[xsplit != 0] <-  1
 		temp[xsplit == 0] <- 0
-		final_matrix = cbind(temp,c1)
+		return(cbind(temp,c1))
 	}
-	return(final_matrix)
 }
 
 #' Checks the length of a matrix
@@ -511,11 +510,12 @@ run_model <- function(util, plot_flag = FALSE, step = 0.5, n = 4, unretrofit_fla
 	x = temp$x
 	y = temp$y
 	n = length(x)
+	step_char = as.character(length(step))
 
 	df  = data.frame(x = x, y = y, z = z)
 	for (model in model_list)
 	{	
-		bestvalue = switch(as.character(length(step)), '1' = create_model(x,y,model, step = step),
+		bestvalue = switch(step_char, '1' = create_model(x,y,model, step = step),
 			create_model_2(x,y,model, step = step))
 		bestvalue[['stat_test']]= model_test(x, bestvalue, model, n) 
 		if (plot_flag){bestvalue[['figure']] = main_plot_handler(util, bestvalue, energy, b_name, unretrofit_flag)}

@@ -1,5 +1,5 @@
 Package: bRema
-Title: Calculate and graph parameter based models for building energy usage
+Title: Building Energy Modelling and Analysis tool in R
 Version: 1.0.0
 Authors@R: c(
     person("Tin Tun", "Naing", , "tinnaing347@gmail.com", c("aut", "cre")),
