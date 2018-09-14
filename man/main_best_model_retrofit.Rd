@@ -5,7 +5,7 @@
 \title{Returns the best model for retrofit data}
 \usage{
 main_best_model_retrofit(inter_result, energy, metric_flag = TRUE,
-  CV_RMSE_elec = 25, Rsquared_elec = 0.75, CV_RMSE_fuel = 50,
+  CV_RMSE_elec = 0.25, Rsquared_elec = 0.75, CV_RMSE_fuel = 0.5,
   Rsquared_fuel = 0.75)
 }
 \arguments{
@@ -15,11 +15,11 @@ main_best_model_retrofit(inter_result, energy, metric_flag = TRUE,
 
 \item{metric_flag}{A boolean value. Defaults to TRUE. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.}
 
-\item{CV_RMSE_elec}{A numeric value. CV-RMSE threshold value for Elec. Defaults to 25.}
+\item{CV_RMSE_elec}{A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.}
 
 \item{Rsquared_elec}{A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.}
 
-\item{CV_RMSE_fuel}{A numeric value. CV-RMSE threshold value for Fuel. Defaults to 50.}
+\item{CV_RMSE_fuel}{A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.}
 
 \item{Rsquared_fuel}{A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.}
 }

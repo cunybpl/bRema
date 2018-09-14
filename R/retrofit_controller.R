@@ -29,9 +29,9 @@ run_model_retrofit <- function(util, plot_flag = FALSE, step = 0.5, n_pre = 4, n
 #' @param metric_flag A boolean value. Defaults to \code{TRUE}. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.
 #' @param plot_flag A boolean value. Defaults to \code{FALSE}. If set to \code{FALSE}, it will not return any plots.
 #' @param step A single numeric value or a vector. If it is a single numeric value, \code{create_model} will be used to find change-point(s). If it is a vector with more than one component, \code{create_model_2} will be used. Defaults to 0.5. Adjust \code{step}-size depending on independent varaiables.
-#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 25.
+#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.
 #' @param Rsquared_elec A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.
-#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 50.
+#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.
 #' @param Rsquared_fuel A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.
 #' @param n_pre A numeric value that determines threshold for population test for pre-retrofit: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
 #' @param n_post A numeric value that determines threshold for population test for post-retrofit: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
@@ -44,7 +44,7 @@ run_model_retrofit <- function(util, plot_flag = FALSE, step = 0.5, n_pre = 4, n
 #' batch_result = batch_run_retrofit(retrofit_utility)
 #' }
 batch_run_retrofit <- function(utility, metric_flag = TRUE, plot_flag = FALSE, step = 0.5,
-            CV_RMSE_elec = 25, Rsquared_elec = 0.75, CV_RMSE_fuel = 50, 
+            CV_RMSE_elec = 0.25, Rsquared_elec = 0.75, CV_RMSE_fuel = 0.50, 
             Rsquared_fuel = 0.75, n_pre = 4, n_post = 4)
 { 
   result = list(best_result_df = data.frame(), plot_list = list())
@@ -72,9 +72,9 @@ batch_run_retrofit <- function(utility, metric_flag = TRUE, plot_flag = FALSE, s
 #' @param metric_flag A boolean value. Defaults to \code{TRUE}. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.
 #' @param plot_flag A boolean value. Defaults to \code{FALSE}. If set to \code{FALSE}, it will not return any plots.
 #' @param step A single numeric value or a vector. If it is a single numeric value, \code{create_model} will be used to find change-point(s). If it is a vector with more than one component, \code{create_model_2} will be used. Defaults to 0.5. Adjust \code{step}-size depending on independent varaiables.
-#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 25.
+#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.
 #' @param Rsquared_elec A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.
-#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 50.
+#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.
 #' @param Rsquared_fuel A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.
 #' @param n_pre A numeric value that determines threshold for population test for pre-retrofit: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
 #' @param n_post A numeric value that determines threshold for population test for post-retrofit: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
@@ -87,8 +87,8 @@ batch_run_retrofit <- function(utility, metric_flag = TRUE, plot_flag = FALSE, s
 #' batch_result = batch_run_energy_retrofit(retrofit_utility, 'Elec')
 #' }
 batch_run_energy_retrofit <- function(utility, energy, metric_flag = TRUE, plot_flag = FALSE,
-                                      step = 0.5, CV_RMSE_elec = 25, Rsquared_elec = 0.75,
-                                      CV_RMSE_fuel = 50, Rsquared_fuel = 0.75, n_pre = 4, n_post = 4)
+                                      step = 0.5, CV_RMSE_elec = 0.25, Rsquared_elec = 0.75,
+                                      CV_RMSE_fuel = 0.50, Rsquared_fuel = 0.75, n_pre = 4, n_post = 4)
 {
   utility = subset(utility, utility$energy_type == energy)
   plot_list = list()
@@ -126,9 +126,9 @@ batch_run_energy_retrofit <- function(utility, energy, metric_flag = TRUE, plot_
 #' @param inter_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param energy A charcter string. Energy Type, either 'Elec' or 'Fuel'.
 #' @param metric_flag A boolean value. Defaults to TRUE. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.
-#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 25.
+#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.
 #' @param Rsquared_elec A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.
-#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 50.
+#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.
 #' @param Rsquared_fuel A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.
 #' @export
 #' @seealso \code{\link{main_best_model_func}}, \code{\link{run_model}}, and \code{\link{run_model_retrofit}}
@@ -139,7 +139,7 @@ batch_run_energy_retrofit <- function(utility, energy, metric_flag = TRUE, plot_
 #' retrofit_result = run_model_retrofit(retrofit_util)
 #' retrofit_best_result = main_best_model_retrofit(retrofit_result, 'Elec')}
 main_best_model_retrofit <- function(inter_result, energy, metric_flag = TRUE,
-                            CV_RMSE_elec = 25, Rsquared_elec = 0.75, CV_RMSE_fuel = 50, 
+                            CV_RMSE_elec = 0.25, Rsquared_elec = 0.75, CV_RMSE_fuel = 0.50, 
                             Rsquared_fuel = 0.75)
 { 
 

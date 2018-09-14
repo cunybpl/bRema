@@ -5,8 +5,8 @@
 \title{Batch run for specific energy (retrofit)}
 \usage{
 batch_run_energy_retrofit(utility, energy, metric_flag = TRUE,
-  plot_flag = FALSE, step = 0.5, CV_RMSE_elec = 25,
-  Rsquared_elec = 0.75, CV_RMSE_fuel = 50, Rsquared_fuel = 0.75,
+  plot_flag = FALSE, step = 0.5, CV_RMSE_elec = 0.25,
+  Rsquared_elec = 0.75, CV_RMSE_fuel = 0.5, Rsquared_fuel = 0.75,
   n_pre = 4, n_post = 4)
 }
 \arguments{
@@ -20,11 +20,11 @@ batch_run_energy_retrofit(utility, energy, metric_flag = TRUE,
 
 \item{step}{A single numeric value or a vector. If it is a single numeric value, \code{create_model} will be used to find change-point(s). If it is a vector with more than one component, \code{create_model_2} will be used. Defaults to 0.5. Adjust \code{step}-size depending on independent varaiables.}
 
-\item{CV_RMSE_elec}{A numeric value. CV-RMSE threshold value for Elec. Defaults to 25.}
+\item{CV_RMSE_elec}{A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.}
 
 \item{Rsquared_elec}{A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.}
 
-\item{CV_RMSE_fuel}{A numeric value. CV-RMSE threshold value for Fuel. Defaults to 50.}
+\item{CV_RMSE_fuel}{A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.}
 
 \item{Rsquared_fuel}{A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.}
 
