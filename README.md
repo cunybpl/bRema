@@ -1,5 +1,5 @@
 # bRema: Building Energy Modeling and Analysis in R
-[![Build Status](https://travis-ci.org/tinnaing347/bRema.svg?branch=master)](https://travis-ci.org/tinnaing347/bRema.svg?branch=master)
+[![Build Status](https://travis-ci.org/cunybpl/bRema.svg?branch=master)](https://travis-ci.org/cunybpl/bRema.svg?branch=master)
 ## Overview
 **bRema** is Building Energy Modeling and Analysis package developed in R by **CUNY Building Performance Lab**. bRema allows users to call multiple functions and build desired outside air temperature-dependent linear change-point regression models using monthly energy consumption, and use their own statistical metric thresholds for choosing the best model. Users can also take advantage of built-in plotting functions to visualize models and perform additional statistical analysis using built-in statistical functions. bRema can be used to create models for portfolio analysis or for measurement and verification activities.
 
