@@ -12,7 +12,7 @@ install.packages('plotly')
 devtools::install_github('tinnaing347/bRema')
 ```
 ## Usage
-On the very basic level, given a simple dataset of outside air temperature and energy consumption (either electricity or thermal energy) of a single building, bRema will perform segmented linear regression, generate five different linear change-point regression models that fit the dataset to varying degrees, and select the best model based upon statistical parameters. On a more advanced level, if input data  is structured in a similar format as the included sample dataset (See `bRema::unretrofit_utility`), bRema can batch-run hundreds of buildings in a matter of a few minutes and generate a [LEAN analysis](https://www.researchgate.net/publication/255572769_LEAN_ENERGY_ANALYSIS_IDENTIFYING_DISCOVERING_AND_TRACKING_ENERGY_SAVINGS_POTENTIAL)(Kissock, 2004).
+On the very basic level, given a simple dataset of outside air temperature and energy consumption (either electricity or thermal energy) of a single building, bRema will perform segmented linear regression, generate five different linear change-point regression models that fit the dataset to varying degrees, and select the best model based upon statistical parameters. On a more advanced level, if input data  is structured in a similar format as the included sample dataset (See `bRema::unretrofit_utility`), bRema can batch-run hundreds of buildings in a matter of a few minutes and generate a [LEAN analysis](https://www.researchgate.net/publication/255572769_LEAN_ENERGY_ANALYSIS_IDENTIFYING_DISCOVERING_AND_TRACKING_ENERGY_SAVINGS_POTENTIAL)  (Kissock, 2004).
 
 Following is a simple example that shows how bRema can model a data frame of outside air temperature and energy consumption:
 
