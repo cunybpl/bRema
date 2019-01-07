@@ -4,10 +4,10 @@ Version: 1.0.0
 Authors@R: c(
     person("Tin Tun", "Naing", , "tinnaing347@gmail.com", c("aut", "cre")),
     person("Michele", "Bradley", , "michele.ebradley@gmail.com", "ctb"),
-    person("Johnny", "DeBlase", , "john.deblase@cuny.edu", "ctb"),
-    person("Honey", "Berk", , "honey.berk@cuny.edu", "ctb"),
-    person("Krystyna", "Horn", , "krystyna.horn@cuny.edu", "ctb"),
-    person("Marco", "Ascazubi", , "marco.ascazubi@cuny.edu", "ctb"),
+    person("Johnny", "DeBlase", , "jdeblase@ccny.cuny.edu", "ctb"),
+    person("Honey", "Berk", , "hberk@ccny.cuny.edu", "ctb"),
+    person("Krystyna", "Horn", , "khorn@ccny.cuny.edu", "ctb"),
+    person("Marco", "Ascazubi", , "mascazubi@ccny.cuny.edu", "ctb"),
     person("Daniel", "Ladner", , "danieljladner@gmail.com", "ctb"),
     person("Kirk", "Shillingford", , ,"ctb"),
     person("CUNY BPL", role = c("cph"))
