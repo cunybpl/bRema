@@ -1,7 +1,7 @@
 # bRema: Building Energy Modeling and Analysis in R
 [![Build Status](https://travis-ci.org/tinnaing347/bRema.svg?branch=master)](https://travis-ci.org/tinnaing347/bRema.svg?branch=master)
 ## Overview
-**bRema** is Building Energy Modeling and Analysis package developed in R by **CUNY Building Performance Lab**. bRema allows users to call multiple functions and build desired temperature dependent change-point models from scratch and use their own statistical threshold for choosing the best model. Also, one can take advantage of built-in plotting functions to visualize models and perform additional statistical analysis using built-in stats functions. Moreover, bRema can model both retrofitted and unretrofitted building energy data.
+**bRema** is Building Energy Modeling and Analysis package developed in R by **CUNY Building Performance Lab**. bRema allows users to call multiple functions and build desired outside air temperature-dependent linear change-point regression models using monthly energy consumption, and use their own statistical metric thresholds for choosing the best model. Users can also take advantage of built-in plotting functions to visualize models and perform additional statistical analysis using built-in statistical functions. bRema can be used to create models for portfolio analysis or for measurement and verification activities.
 
 ## Installation
 
@@ -12,7 +12,9 @@ install.packages('plotly')
 devtools::install_github('tinnaing347/bRema')
 ```
 ## Usage
-On the very basic level, given a simple data set of outside air temperature and energy usage (either electricity or fuel) of a single building, bRema will perform segmented linear regression, spit out five different linear regression models that fit the data set and find the best model. On more advanced level, if one uses input that is structured in a similar format as built-in sample data set (See `bRema::unretrofit_utility`), bRema can batch-run hundreds of buildings in a matter of a few minutes and do lean analysis. The following is a very basic simple example that shows how bRema can model given a data frame of outside air temperature and usage:
+On the very basic level, given a simple dataset of outside air temperature and energy consumption (either electricity or thermal energy) of a single building, bRema will perform segmented linear regression, generate five different linear change-point regression models that fit the dataset to varying degrees, and select the best model based upon statistical parameters. On a more advanced level, if input data  is structured in a similar format as the included sample dataset (See `bRema::unretrofit_utility`), bRema can batch-run hundreds of buildings in a matter of a few minutes and generate a LEAN analysis for comparison within a portfolio of buildings.
+
+Following is a simple example that shows how bRema can model a data frame of outside air temperature and energy consumption:
 
 ```r
 #monthly average outside air temperature
@@ -36,7 +38,7 @@ best_model_list$figure
 ```
 ![](https://github.com/tinnaing347/bRema/blob/master/man/figures/readme_example_plot_1.png "A 3PC model for electricity")
 
-If one has a dataset of multiple buildings energy usage similar to sample data provided in the package, one can use `bRema::batch_run` function to  batch run multiple buildings and perform more analysis.
+To model a dataset of multiple buildings similar to sample data provided in the package, use the `bRema::batch_run` function to batch run multiple buildings for analysis.
 ```r
 library(bRema)
 #batch running and modelling
