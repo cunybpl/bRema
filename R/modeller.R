@@ -57,7 +57,7 @@ splitter <- function (model, xmat, cp1  = 0.0, cp2 = 0.0)
 		"2P" = xmat,
 		"3PC" = {
 				xmat[xmat <= cp1] <- 0.0
-				xmat[xmat >= cp1 ] <- xmat[xmat > cp1 ] - cp1
+				xmat[xmat >= cp1 ] <- xmat[xmat >= cp1 ] - cp1
 				xmat
 			},
 		"3PH" = {

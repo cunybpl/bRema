@@ -15,10 +15,10 @@ it will calculate parameters based model and graph them by using plotly.
 Other contributors:
 \itemize{
   \item Michele Bradley \email{michele.ebradley@gmail.com} [contributor]
-  \item Johnny DeBlase \email{john.deblase@cuny.edu} [contributor]
-  \item Honey Berk \email{honey.berk@cuny.edu} [contributor]
-  \item Krystyna Horn \email{krystyna.horn@cuny.edu} [contributor]
-  \item Marco Ascazubi \email{marco.ascazubi@cuny.edu} [contributor]
+  \item Johnny DeBlase \email{jdeblase@ccny.cuny.edu} [contributor]
+  \item Honey Berk \email{hberk@ccny.cuny.edu} [contributor]
+  \item Krystyna Horn \email{khorn@ccny.cuny.edu} [contributor]
+  \item Marco Ascazubi \email{mascazubi@ccny.cuny.edu} [contributor]
   \item Daniel Ladner \email{danieljladner@gmail.com} [contributor]
   \item Kirk Shillingford [contributor]
   \item CUNY BPL [copyright holder]
