@@ -108,10 +108,14 @@ batch_run_energy_retrofit <- function(utility, energy, metric_flag = TRUE, plot_
       	plot_list[[energy]][[as.character(bdbid_n)]][['pre']] = best_result$pre$figure
         plot_list[[energy]][[as.character(bdbid_n)]][['post']] = best_result$post$figure
       }
+
+      pre_util = subset(util, util$prepost == 1)
+      post_util = subset(util, util$prepost == 3)
+
       temp_pre = construct_model_table(best_result$pre, bdbid_n, energy, fiscal_year,
-                                    nrow(util), prepost = 1)
+                                    nrow(pre_util), prepost = 1)
       temp_post = construct_model_table(best_result$post, bdbid_n, energy, fiscal_year,
-                                    nrow(util), prepost = 3)
+                                    nrow(post_util), prepost = 3)
       best_result_df = rbind(best_result_df, temp_pre, temp_post)
     }
   }
