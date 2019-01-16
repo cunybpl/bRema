@@ -23,8 +23,20 @@ saving_calc <- function(util, best_df, bdbid = NA, energy, session_id = NA)
   util$end_date = strptime(util$end_date, format = "%Y-%m-%d")
   util$day = as.numeric(format(util$end_date, format = "%d"))
 
-  B = c(.subset2(best_df, 'ycp')[1],
-  			.subset2(best_df, 'ls')[1], .subset2(best_df, 'rs')[1])
+  ls = .subset2(best_df, 'ls')[1]
+  rs = .subset2(best_df, 'rs')[1]
+  B = c(.subset2(best_df, 'ycp')[1])
+
+  if(ls)
+  {
+  	B = c(B, ls)
+  }
+
+  if(rs)
+  {
+  	B = c(B, rs)
+  }
+
   model = .subset2(best_df, 'model_type')[1]
   cp1 = .subset2(best_df, 'xcp1')[1]
   cp2 = .subset2(best_df, 'xcp2')[1]
