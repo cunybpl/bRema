@@ -4,16 +4,16 @@
 \alias{splitter}
 \title{Splits and restructures a matrix}
 \usage{
-splitter(model, xmat, cp1 = 0, cp2 = 0)
+splitter(model, xmat, cp1 = NA, cp2 = NA)
 }
 \arguments{
 \item{model}{A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.}
 
 \item{xmat}{Independent Column matrix (dimesion, n by 1).}
 
-\item{cp1}{A numeric value. The first change-point. Defaults to 0.}
+\item{cp1}{A numeric value. The first change-point. Defaults to NA.}
 
-\item{cp2}{A numeric value. The second change-point. Defaults to 0.}
+\item{cp2}{A numeric value. The second change-point. Defaults to NA.}
 }
 \description{
 This function produces a matrix based on different change-points inside an interval and models.

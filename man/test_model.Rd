@@ -4,7 +4,7 @@
 \alias{test_model}
 \title{Performs segmented regression for a given model}
 \usage{
-test_model(model, x, y, cp1 = 0, cp2 = 0)
+test_model(model, x, y, cp1 = NA, cp2 = NA)
 }
 \arguments{
 \item{model}{A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.}
@@ -13,9 +13,9 @@ test_model(model, x, y, cp1 = 0, cp2 = 0)
 
 \item{y}{A (column) matrix of actual values(usage), dependent variables.}
 
-\item{cp1}{A numeric value. The first change-point. Defaults to 0.}
+\item{cp1}{A numeric value. The first change-point. Defaults to NA.}
 
-\item{cp2}{A numeric value. The second change-point. Defaults to 0.}
+\item{cp2}{A numeric value. The second change-point. Defaults to NA.}
 }
 \description{
 This function returns a list which contains stats matrix, parameter matrix and change-point(s).

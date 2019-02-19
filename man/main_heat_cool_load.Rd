@@ -4,14 +4,14 @@
 \alias{main_heat_cool_load}
 \title{Calculates heating and cooling load}
 \usage{
-main_heat_cool_load(utility, cp1 = 0, cp2 = 0, ycp, model)
+main_heat_cool_load(utility, cp1 = NA, cp2 = NA, ycp, model)
 }
 \arguments{
 \item{utility}{A utility data frame of \strong{unretrofit data} with columns: energy_type, OAT, usage, end_date and day. Day column: the end date from end_date column.}
 
-\item{cp1}{A numeric value. The first change-point. Defaults to 0.}
+\item{cp1}{A numeric value. The first change-point. Defaults to NA.}
 
-\item{cp2}{A numeric value. The second change-point. Defaults to 0.}
+\item{cp2}{A numeric value. The second change-point. Defaults to NA.}
 
 \item{ycp}{y-value at \code{cp1} and \code{cp2}.}
 

@@ -7,7 +7,7 @@
 lean_analysis_ranking(post_df, energy)
 }
 \arguments{
-\item{post_df}{A data frame returned from \code{\link{post_model_prelimanary}}. The data frame should include multiple buildings to have meaningful interpretation of the rank.}
+\item{post_df}{A data frame returned from \code{\link{post_model_preliminary}}. The data frame should include multiple buildings to have meaningful interpretation of the rank.}
 
 \item{energy}{A character string. Energy Type, either 'Elec' or 'Fuel'.}
 }

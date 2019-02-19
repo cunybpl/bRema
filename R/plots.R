@@ -128,7 +128,7 @@ plot_point <- function(df, energy, pre_key = 0, model_fig = plot_ly(), b_name = 
 #' @param model A character string. Model: '2P', '3PC', '3PH', '4P', or '5P'.
 #' @param B A matrix, either 2 by 1 or 3 by 1 matrix. B[1] = y-value at cp1 (and cp2), B[2] = slope (if there are two slopes, this is the leftmost slope), B[3] = slope (if there are two slopes, this is the rightmost slope)
 #' @param cp1 A numeric value. If there are two change-points, this is the leftmost change-point.
-#' @param cp2 A numeric value. If there are two change-points, this is the rightmost change-point. If there is only one change-point, set this to be zero. 
+#' @param cp2 A numeric value. If there are two change-points, this is the rightmost change-point. If there is only one change-point, set this to be NA. 
 #' @param energy A character string. Energy type, either 'Elec' or 'Fuel'.
 #' @param pre_key A numeric value. 0 for unretrofit, 1 for pre-retrofit and 3 for post-retrofit. Defaults to 0.
 #' @param unit A boolean value. Determines whether or not to convert kWh to BTU.
@@ -144,12 +144,12 @@ plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = pl
   xf = x[length(x)]
   Ycp= B[1] #coeff, need this to get y intercept
   slope1 = B[2]
-  yInter_1 = Ycp - slope1*cp1
+  yInter_1 = switch(model, '2P' = Ycp - slope1, Ycp - slope1*cp1)
 
   if (length(B) == 3) # 4P or 5p
   {
     slope2 = B[3]
-    if (cp2 == 0) # 4P
+    if (is.na(cp2)) # 4P
     {
       yInter_2 = Ycp - slope2*cp1
     }else # 5P

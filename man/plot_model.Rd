@@ -15,7 +15,7 @@ plot_model(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = plot_ly())
 
 \item{cp1}{A numeric value. If there are two change-points, this is the leftmost change-point.}
 
-\item{cp2}{A numeric value. If there are two change-points, this is the rightmost change-point. If there is only one change-point, set this to be zero.}
+\item{cp2}{A numeric value. If there are two change-points, this is the rightmost change-point. If there is only one change-point, set this to be NA.}
 
 \item{energy}{A character string. Energy type, either 'Elec' or 'Fuel'.}
 

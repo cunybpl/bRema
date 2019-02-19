@@ -25,7 +25,7 @@ util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86' &
                unretrofit_utility$energy_type == 'Elec')
 #finding best model and calculating best model data frame
 best_df = batch_run_energy(util, 'Elec')$best_result_df
-post_df = post_model_prelimanary(util, best_df, bdbid_n, energy)
+post_df = post_model_preliminary(util, best_df, bdbid_n, energy)
 percent_heat_cool_func(post_df$total_consumption, post_df$heat_load, post_df$cool_load)
 }
 }

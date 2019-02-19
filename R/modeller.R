@@ -43,13 +43,13 @@ least_squares <- function (xmat, ymat) # B = [b1 b2 b3], b1 = coeff, b2 = slope 
 #'
 #' @param model A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
 #' @param xmat Independent Column matrix (dimesion, n by 1).
-#' @param cp1 A numeric value. The first change-point. Defaults to 0.
-#' @param cp2 A numeric value. The second change-point. Defaults to 0.
+#' @param cp1 A numeric value. The first change-point. Defaults to NA.
+#' @param cp2 A numeric value. The second change-point. Defaults to NA.
 #' @export
 #' @examples
 #' x = matrix(c(1,2.3,2.78, 3.4,5.5, 6.1, 7 ,8.4, 9,10))
 #' x_split = splitter('4P', x, 3)
-splitter <- function (model, xmat, cp1  = 0.0, cp2 = 0.0)
+splitter <- function (model, xmat, cp1  = NA, cp2 = NA)
 {	
 	options(digits=15)
 
@@ -201,8 +201,8 @@ stats <- function(y, y_predict)
 #' @param model A charater string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
 #' @param x A vector. Independent variable.
 #' @param B A matrix, either 2 by 1 or 3 by 1 matrix. B[1] = y-value at cp1 (and cp2), B[2] = slope (if there are two slopes, this is the leftmost slope), B[3] = slope (if there are two slopes, this is the rightmost slope).
-#' @param cp1 A numeric value. The first change-point. Defaults to 0.
-#' @param cp2 A numeric value. The second change-point. Defaults to 0.
+#' @param cp1 A numeric value. The first change-point. Defaults to NA.
+#' @param cp2 A numeric value. The second change-point. Defaults to NA.
 #' @export
 #' @examples
 #' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
@@ -212,17 +212,18 @@ stats <- function(y, y_predict)
 #' xmat = make_matrix(x_split)
 #' B = least_squares(xmat, temp$y)
 #' y_est = y_gen('4P', temp$x, B, 51, 0)
-y_gen <- function(model, x, B, cp1=0, cp2 =0) #input x is unmodified original x
+y_gen <- function(model, x, B, cp1=NA, cp2 = NA) #input x is unmodified original x
 {	
 	options(digits=15)
 	Ycp= B[1] #coeff, need this to get y intercept
 	slope1 = B[2]
-	yInter_1 = Ycp - slope1*cp1
+
+	yInter_1 = switch(model, '2P' = Ycp - slope1, Ycp - slope1*cp1)
 
 	if (length(B) == 3) # 4P or 5p
 	{
 		slope2 = B[3]
-		if (cp2 == 0) # 4P
+		if (is.na(cp2)) # 4P
 		{
 			yInter_2 = Ycp - slope2*cp1
 		}else # 5P
@@ -267,14 +268,14 @@ y_gen <- function(model, x, B, cp1=0, cp2 =0) #input x is unmodified original x
 #' @param model A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
 #' @param x A (column) matrix of outside air temperature, independent variables.
 #' @param y A (column) matrix of actual values(usage), dependent variables.
-#' @param cp1 A numeric value. The first change-point. Defaults to 0.
-#' @param cp2 A numeric value. The second change-point. Defaults to 0.
+#' @param cp1 A numeric value. The first change-point. Defaults to NA.
+#' @param cp2 A numeric value. The second change-point. Defaults to NA.
 #' @export
 #' @examples
 #' x = matrix(c(1:10))
 #' y = matrix(c(1,2.5,3,4,5,5.5,7,8.3,9,10))
 #' result = test_model('4P', x, y, 4)
-test_model <- function(model, x,y, cp1=0, cp2 = 0) #use this with a specific change-point, call sort matrix first.
+test_model <- function(model, x,y, cp1=NA, cp2 = NA) #use this with a specific change-point, call sort matrix first.
 {	
 	options(digits=15)
 	xsplit = splitter(model, x, cp1, cp2)
@@ -512,7 +513,6 @@ run_model <- function(util, plot_flag = FALSE, step = 0.5, n = 4, unretrofit_fla
 	n = length(x)
 	step_char = as.character(length(step))
 
-	df  = data.frame(x = x, y = y, z = z)
 	for (model in model_list)
 	{	
 		bestvalue = switch(step_char, '1' = create_model(x,y,model, step = step),
@@ -629,8 +629,12 @@ pop_test <- function(x, bestvalue, model, n = 4)
 	heatnum = sum(temp)
 
 	temp = c(1:length(x))
-	temp[x >= max(cp1,cp2)] <- 1
-	temp[x < max(cp1,cp2)] <- 0
+	if(model=='2P'){
+		options(warn=-1)
+	}
+	temp[x >= max(cp1,cp2, na.rm =TRUE)] <- 1
+	temp[x < max(cp1,cp2, na.rm =TRUE)] <- 0
+	options(warn=0)
 	coolnum = sum(temp)
 
 	answer = switch(model, 

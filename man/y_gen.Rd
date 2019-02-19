@@ -4,7 +4,7 @@
 \alias{y_gen}
 \title{Calculates predicted usage}
 \usage{
-y_gen(model, x, B, cp1 = 0, cp2 = 0)
+y_gen(model, x, B, cp1 = NA, cp2 = NA)
 }
 \arguments{
 \item{model}{A charater string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.}
@@ -13,9 +13,9 @@ y_gen(model, x, B, cp1 = 0, cp2 = 0)
 
 \item{B}{A matrix, either 2 by 1 or 3 by 1 matrix. B[1] = y-value at cp1 (and cp2), B[2] = slope (if there are two slopes, this is the leftmost slope), B[3] = slope (if there are two slopes, this is the rightmost slope).}
 
-\item{cp1}{A numeric value. The first change-point. Defaults to 0.}
+\item{cp1}{A numeric value. The first change-point. Defaults to NA.}
 
-\item{cp2}{A numeric value. The second change-point. Defaults to 0.}
+\item{cp2}{A numeric value. The second change-point. Defaults to NA.}
 }
 \description{
 This function returns a matrix of estimated usage given a specific model, independent variable matrix, parameter matrix and change-point(s).

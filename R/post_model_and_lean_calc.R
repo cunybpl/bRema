@@ -60,7 +60,7 @@ post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
   { 
     util = subset(utility, utility$bdbid == bdbid_n)
     best_df = subset(best_model, best_model$bdbid == bdbid_n)
-    temp = post_model_prelimanary(util, best_df, bdbid_n, energy)
+    temp = post_model_preliminary(util, best_df, bdbid_n, energy)
     #temp = cbind(temp, percent_heat_cool_func(temp$total_consumption, temp$heat_load, temp$cool_load))
     post_df = rbind(post_df, temp)
   }
@@ -75,7 +75,7 @@ post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
   return(post_df)
 }
 
-#' Performs prelimanary post model calculation and rearranging 
+#' Performs preliminary post model calculation and rearranging 
 #'
 #' This function transforms \code{best_model} in a more meaningful way and returns calculations such as heating load and cooling load.
 #' @param util A data frame with columns: OAT, usage, and end_date. See \code{\link{unretrofit_utility}} for more information about data format.
@@ -93,9 +93,9 @@ post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
 #'                unretrofit_utility$energy_type == 'Elec')
 #' #finding best model and calculating best model data frame
 #' best_df = batch_run_energy(util, 'Elec')$best_result_df
-#' post_df = post_model_prelimanary(util, best_df, bdbid_n, energy)
+#' post_df = post_model_preliminary(util, best_df, bdbid_n, energy)
 #' }
-post_model_prelimanary <- function(util, best_df, bdbid_n = NA, energy)
+post_model_preliminary <- function(util, best_df, bdbid_n = NA, energy)
 { 
   options(digits=15)
   if(!is.POSIXlt(util$end_date) & !is.POSIXt(util$end_date) & !is.POSIXct(util$end_date))
@@ -153,12 +153,12 @@ heat_cool_sen_change <- function(best_df, model, energy)
   df = data.frame(heating_change_point  = switch(model,
                 "3PC" = .subset2(best_df, 'xcp1')[1], "3PH" = .subset2(best_df, 'xcp1')[1],
                 "4P" = .subset2(best_df, 'xcp1')[1],
-                "5P" = .subset2(best_df, 'xcp1')[1], 0)) #set zero or NULL later for elec
+                "5P" = .subset2(best_df, 'xcp1')[1], NA)) #set zero or NULL later for elec
 
   df$cooling_change_point = switch(model,
                 "3PC" = .subset2(best_df, 'xcp1')[1], "3PH" = .subset2(best_df, 'xcp1')[1],
                 "4P" = .subset2(best_df, 'xcp1')[1],
-                "5P" = .subset2(best_df, 'xcp2')[1], 0)
+                "5P" = .subset2(best_df, 'xcp2')[1], NA)
 
   df$heating_sensitivity  = switch(model,
                 "3PH" = .subset2(best_df, 'ls')[1],
@@ -193,7 +193,7 @@ heat_cool_sen_change <- function(best_df, model, energy)
 #'                unretrofit_utility$energy_type == 'Elec')
 #' #finding best model and calculating best model data frame
 #' best_df = batch_run_energy(util, 'Elec')$best_result_df
-#' post_df = post_model_prelimanary(util, best_df, bdbid_n, energy)
+#' post_df = post_model_preliminary(util, best_df, bdbid_n, energy)
 #' percent_heat_cool_func(post_df$total_consumption, post_df$heat_load, post_df$cool_load)
 #' }
 percent_heat_cool_func <- function(consumption, heat_load, cool_load)
@@ -210,12 +210,12 @@ percent_heat_cool_func <- function(consumption, heat_load, cool_load)
 #'
 #' This function calculates heating and cooling load of a builiding. 
 #' @param utility A utility data frame of \strong{unretrofit data} with columns: energy_type, OAT, usage, end_date and day. Day column: the end date from end_date column.
-#' @param cp1 A numeric value. The first change-point. Defaults to 0.
-#' @param cp2 A numeric value. The second change-point. Defaults to 0.
+#' @param cp1 A numeric value. The first change-point. Defaults to NA.
+#' @param cp2 A numeric value. The second change-point. Defaults to NA.
 #' @param ycp y-value at \code{cp1} and \code{cp2}.
 #' @param model A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
 #' @export
-main_heat_cool_load <- function(utility, cp1 = 0, cp2 = 0, ycp, model)
+main_heat_cool_load <- function(utility, cp1 = NA, cp2 = NA, ycp, model)
 { 
   options(digits=15)
   heat_load = switch(model, "5P" = calc_heat_load(utility, cp1, ycp),
@@ -268,7 +268,7 @@ calc_cool_load <- function(utility, cp, ycp)
 #' Ranks baseload, heating/cooling change-points and sensitivity.
 #'
 #' This function calculates numeric and percent rank for baseload, heating/cooling change-points and sensitivity.
-#' @param post_df A data frame returned from \code{\link{post_model_prelimanary}}. The data frame should include multiple buildings to have meaningful interpretation of the rank.
+#' @param post_df A data frame returned from \code{\link{post_model_preliminary}}. The data frame should include multiple buildings to have meaningful interpretation of the rank.
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
 #' @export
 #' @examples
