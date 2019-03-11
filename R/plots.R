@@ -142,59 +142,30 @@ plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = pl
   x = x[order(x)]
   x0 = x[1]
   xf = x[length(x)]
-  Ycp= B[1] #coeff, need this to get y intercept
-  slope1 = B[2]
-  yInter_1 = switch(model, '2P' = Ycp - slope1, Ycp - slope1*cp1)
-
-  if (length(B) == 3) # 4P or 5p
-  {
-    slope2 = B[3]
-    if (is.na(cp2)) # 4P
-    {
-      yInter_2 = Ycp - slope2*cp1
-    }else # 5P
-    {
-      yInter_2 = Ycp - slope2*cp2
-    }
-  }
 
 
   estimated = switch(model,
-  	"5P" = {
-  		x = c(x0, cp1, cp2, xf)
-  		estimated = c(1,2,3,4)
-   		estimated[x <= cp1] <- yInter_1 + slope1*x[x <= cp1]
-   		estimated[x >= cp2] <- yInter_2 + slope2*x[x >= cp2]
-   		estimated[ x > cp1 & x < cp2] <- Ycp
-   		estimated
-  	},
-  	"4P" = {
-		x = c(x0, cp1, xf)
-		estimated = c(1,2,3)
-		estimated[x <= cp1] <- yInter_1 + slope1*x[x <= cp1] 
-		estimated[x > cp1] <- yInter_2 + slope2*x[x > cp1]
-		estimated
-  		},
-  	"3PH" = {
-  		x = c(x0, cp1, xf)
-  		estimated = c(1,2,3)
-  		estimated[x <= cp1] <- yInter_1 + slope1*x[x <= cp1]
-  		estimated[x > cp1] <- Ycp
-  		estimated
-  	},
-  	"3PC" = {
-  		x = c(x0, cp1, xf)
-  		estimated = c(1,2,3)
-    	estimated[x > cp1] <- yInter_1 + slope1*x[x > cp1]
-    	estimated[x <= cp1] <- Ycp
-    	estimated
-  	},
-  	"2P" = {
-  		x = c(x0, xf)
-  		estimated = yInter_1 + slope1*x 
-  		estimated
-  	}
-  	)
+    "5P" = {
+      x = c(x0, cp1, cp2, xf)
+      estimated = as.vector(y_gen(model, x, B, cp1, cp2))
+    },
+    "4P" = {
+    x = c(x0, cp1, xf)
+    estimated = as.vector(y_gen(model, x, B, cp1))
+    },
+    "3PH" = {
+      x = c(x0, cp1, xf)
+      estimated = as.vector(y_gen(model, x, B, cp1))
+    },
+    "3PC" = {
+      x = c(x0, cp1, xf)
+      estimated = as.vector(y_gen(model, x, B, cp1))
+    },
+    "2P" = {
+      x = c(x0, xf)
+      estimated = as.vector(y_gen(model, x, B))
+    }
+    )
 
   if (unit){
     df = data.frame(x = x, y = estimated*3412.14)
@@ -204,13 +175,13 @@ plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = pl
   }
 
   if(pre_key == 0){
-	name_n = paste(energy, 'Model')
+    name_n = paste(energy, 'Model')
   }else if (pre_key == 1)
   {
-	name_n = paste('Pre', energy, 'Model')
+    name_n = paste('Pre', energy, 'Model')
   }else
   {
-	name_n = paste('Post', energy, 'Model')
+    name_n = paste('Post', energy, 'Model')
   }
 
   switch(as.character(energy), 
@@ -227,8 +198,8 @@ plot_model <- function(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = pl
     )
 
   model_fig = add_trace(p = p1, x = ~df$x, y = ~df$y, type ='scatter',
-      						mode = 'lines', line = list(color = color_n),
-      						name = name_n, inherit = FALSE)
+                  mode = 'lines', line = list(color = color_n),
+                  name = name_n, inherit = FALSE)
   return(model_fig)
 }
 

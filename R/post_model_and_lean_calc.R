@@ -14,6 +14,14 @@ main_post_model <- function(utility, best_model, rank_flag = FALSE)
 {
   options(digits=15)
 
+  if(isTRUE(is.null(utility$end_date))){
+    stop("end_date column is missing.", call. = FALSE)
+  }
+
+  if(isTRUE(is.na(utility$end_date))){
+    stop("end_date column has missing value(s).", call. = FALSE)
+  }
+
   best_model$energy_type = as.character(best_model$energy_type)
   best_model$model_type = as.character(best_model$model_type)
 
@@ -98,6 +106,7 @@ post_model_energy <- function(utility, best_model, energy, rank_flag = FALSE)
 post_model_preliminary <- function(util, best_df, bdbid_n = NA, energy)
 { 
   options(digits=15)
+
   if(!is.POSIXlt(util$end_date) & !is.POSIXt(util$end_date) & !is.POSIXct(util$end_date))
   { 
     if (grepl('/', util$end_date[1]))

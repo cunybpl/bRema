@@ -218,7 +218,7 @@ y_gen <- function(model, x, B, cp1=NA, cp2 = NA) #input x is unmodified original
 	Ycp= B[1] #coeff, need this to get y intercept
 	slope1 = B[2]
 
-	yInter_1 = switch(model, '2P' = Ycp - slope1, Ycp - slope1*cp1)
+	yInter_1 = switch(model, '2P' = Ycp, Ycp - slope1*cp1)
 
 	if (length(B) == 3) # 4P or 5p
 	{
