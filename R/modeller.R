@@ -233,33 +233,33 @@ y_gen <- function(model, x, B, cp1=NA, cp2 = NA) #input x is unmodified original
 	}
 
 	y_predict = matrix(1:length(x))
-	y_predict = switch(model, 
+	switch(model, 
 		"5P" = {
 			y_predict[x <= cp1 ] <- yInter_1 + slope1*x[x <= cp1]
 			y_predict[x >= cp2] <- yInter_2 + slope2*x[x >= cp2]
 			y_predict[x > cp1 & x < cp2] <- Ycp
-			y_predict
+			return(y_predict)
 		},
 		"4P" = {
 			y_predict[x <= cp1] <- yInter_1 + slope1*x[x <= cp1]
 			y_predict[x > cp1] <- yInter_2 + slope2*x[x > cp1]
-			y_predict
+			return(y_predict)
 		},
 		"3PH" = {
 			y_predict[x <= cp1] <-  yInter_1 + slope1*x[x <= cp1]
 			y_predict[x > cp1] <- Ycp
-			y_predict
+			return(y_predict)
 		},
 		"3PC" = {
 			y_predict[x > cp1] <- yInter_1 + slope1*x[x > cp1]
 			y_predict[x <= cp1] <- Ycp
-			y_predict
+			return(y_predict)
 		},
 		"2P" = {
-			yInter_1 + slope1*x
+			y_predict = yInter_1 + slope1*x
+			return(y_predict)
 		}
 		)
-	return(y_predict)
 }
 
 #' Performs segmented regression for a given model
@@ -1090,7 +1090,10 @@ batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FA
   {	
     util = subset(utility, utility$bdbid == bdbid_n)
     points = nrow(util)
-    if(check_zeros(util)){next}
+    if(check_zeros(util)){
+    	warning(paste('More than half of', energy,'usage points of', bdbid_n,'are zeros. Thus, it is being skipped.'))
+    	next
+   	}
     inter_result = run_model(util, plot_flag = plot_flag, step = step, n = n)
 
     if(all_model_flag)

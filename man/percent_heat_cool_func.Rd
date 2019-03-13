@@ -4,20 +4,20 @@
 \alias{percent_heat_cool_func}
 \title{Calculates percentanges of heat/cool load and baseload}
 \usage{
-percent_heat_cool_func(consumption, heat_load, cool_load)
+percent_heat_cool_func(predicted_total_consumption, predicted_heat_load,
+  predicted_cool_load)
 }
 \arguments{
-\item{consumption}{total consumption.}
+\item{predicted_total_consumption}{total predicted consumption. To calculate predicted_total_consumption, use output returned from \code{\link{calc_predicted_usage}}.}
 
-\item{heat_load}{heating load.}
+\item{predicted_heat_load}{predicted heating load. Use output return from \code{\link{calc_predict_heat_load}} or \code{\link{predicted_heat_cool_load_func}}.}
 
-\item{cool_load}{cooling load.}
+\item{predicted_cool_load}{preidcted cooling load. Use output return from \code{\link{calc_predict_cool_load}} or \code{\link{predicted_heat_cool_load_func}}.}
 }
 \description{
-This function calculates baseload and percentanges of heat/cool load and baseload.
+This function calculates percentanges of heat/cool load and baseload by using output from \code{\link{predicted_heat_cool_load_func}}.
 }
 \examples{
-\dontrun{
 bdbid_n = 'f3acce86'
 energy = 'Elec'
 #first subsetting utility data frame by bdbid and energy
@@ -26,6 +26,6 @@ util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86' &
 #finding best model and calculating best model data frame
 best_df = batch_run_energy(util, 'Elec')$best_result_df
 post_df = post_model_preliminary(util, best_df, bdbid_n, energy)
-percent_heat_cool_func(post_df$total_consumption, post_df$heat_load, post_df$cool_load)
-}
+percent_df = percent_heat_cool_func(post_df$predicted_total_consumption,
+                                     post_df$predicted_heat_load, post_df$predicted_cool_load)
 }
