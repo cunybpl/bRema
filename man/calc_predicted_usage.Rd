@@ -12,7 +12,7 @@ calc_predicted_usage(util, best_df)
 \item{best_df}{Best model data frame (of a single builiding) returned from \code{\link{batch_run}}.}
 }
 \description{
-This function calculates predicted usage (of a single building) based on modeller result. Output \code{predicted_usage} is used in
+This function calculates predicted usage (of a single building) based on modeller result. The output \code{predicted_usage} is used in \code{\link{predict_heat_cool_load_func}}
 }
 \examples{
 \dontrun{

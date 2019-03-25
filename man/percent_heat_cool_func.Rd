@@ -10,12 +10,12 @@ percent_heat_cool_func(predicted_total_consumption, predicted_heat_load,
 \arguments{
 \item{predicted_total_consumption}{total predicted consumption. To calculate predicted_total_consumption, use output returned from \code{\link{calc_predicted_usage}}.}
 
-\item{predicted_heat_load}{predicted heating load. Use output return from \code{\link{calc_predict_heat_load}} or \code{\link{predicted_heat_cool_load_func}}.}
+\item{predicted_heat_load}{predicted heating load. Use output return from \code{\link{calc_predict_heat_load}} or \code{\link{predict_heat_cool_load_func}}.}
 
-\item{predicted_cool_load}{preidcted cooling load. Use output return from \code{\link{calc_predict_cool_load}} or \code{\link{predicted_heat_cool_load_func}}.}
+\item{predicted_cool_load}{preidcted cooling load. Use output return from \code{\link{calc_predict_cool_load}} or \code{\link{predict_heat_cool_load_func}}.}
 }
 \description{
-This function calculates percentanges of heat/cool load and baseload by using output from \code{\link{predicted_heat_cool_load_func}}.
+This function calculates percentanges of heat/cool load and baseload by using output from \code{\link{predict_heat_cool_load_func}}.
 }
 \examples{
 bdbid_n = 'f3acce86'

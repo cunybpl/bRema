@@ -20,5 +20,5 @@ calc_heat_cool_load(percent_heating, percent_cooling, percent_baseload,
 This function calculates \strong{(not predicted)} baseload and heating and cooling load by using output from \code{\link{percent_heat_cool_func}} and total_cosumption.
 }
 \details{
-This function is different from \code{\link{predicted_heat_cool_load_func}}. See Heat and Cool Load, subsection of Methodlogy section of bRema paper.
+This function is different from \code{\link{predict_heat_cool_load_func}}. See Heat and Cool Load, subsection of Methodlogy section of bRema paper.
 }

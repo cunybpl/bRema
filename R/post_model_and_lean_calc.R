@@ -143,7 +143,12 @@ post_model_preliminary <- function(util, best_df, bdbid_n = NA, energy)
   util$predicted_usage = calc_predicted_usage(util, best_df)
   df$predicted_total_consumption = sum(util$predicted_usage * util$day)
 
-  df = cbind(df, predicted_heat_cool_load_func(util, .subset2(df,'model_type')[1],
+  if (.subset2(df,'model_type')[1] == '2P'){
+    return(cbind(df, predict_heat_cool_load_2P(util,
+            .subset2(df, 'predicted_total_consumption')[1], .subset2(best_df, 'ls')[1])))
+  }
+
+  df = cbind(df, predict_heat_cool_load_func(util, .subset2(df,'model_type')[1],
                 .subset2(df,'ycp')[1], .subset2(df, 'heating_change_point')[1],
                 .subset2(df,'cooling_change_point')[1]))
 
@@ -184,25 +189,24 @@ heat_cool_sen_change <- function(best_df, model, energy)
                 "3PH" = .subset2(best_df, 'ls')[1],
                 "4P" = .subset2(best_df, 'ls')[1],
                 "5P" = .subset2(best_df, 'ls')[1], "3PC" = 0,
-                "2P" = switch(energy, "Elec" = 0,
-                  .subset2(best_df, 'ls')[1]))
+                "2P" = ifelse(.subset2(best_df, 'ls')[1] < 0, .subset2(best_df, 'ls')[1], 0))
+
 
   df$cooling_sensitivity = switch(model,
                 "3PC" = .subset2(best_df, 'rs')[1],
                 "4P" = .subset2(best_df, 'rs')[1],
                 "5P" = .subset2(best_df, 'rs')[1], "3PH" = 0,
-                "2P" = switch(energy, "Fuel" = 0,
-                  .subset2(best_df, 'ls')[1]))
+                "2P" = ifelse(.subset2(best_df, 'ls')[1] > 0, .subset2(best_df, 'ls')[1], 0))
 
   return(df)
 }
 
 #' Calculates percentanges of heat/cool load and baseload
 #'
-#' This function calculates percentanges of heat/cool load and baseload by using output from \code{\link{predicted_heat_cool_load_func}}.
+#' This function calculates percentanges of heat/cool load and baseload by using output from \code{\link{predict_heat_cool_load_func}}.
 #' @param predicted_total_consumption total predicted consumption. To calculate predicted_total_consumption, use output returned from \code{\link{calc_predicted_usage}}.
-#' @param predicted_heat_load predicted heating load. Use output return from \code{\link{calc_predict_heat_load}} or \code{\link{predicted_heat_cool_load_func}}.
-#' @param predicted_cool_load preidcted cooling load. Use output return from \code{\link{calc_predict_cool_load}} or \code{\link{predicted_heat_cool_load_func}}.
+#' @param predicted_heat_load predicted heating load. Use output return from \code{\link{calc_predict_heat_load}} or \code{\link{predict_heat_cool_load_func}}.
+#' @param predicted_cool_load preidcted cooling load. Use output return from \code{\link{calc_predict_cool_load}} or \code{\link{predict_heat_cool_load_func}}.
 #' @export
 #' @examples
 #' bdbid_n = 'f3acce86'
@@ -227,8 +231,9 @@ percent_heat_cool_func <- function(predicted_total_consumption, predicted_heat_l
 #' Calculates heating and cooling load
 #'
 #' This function calculates predicted heating and cooling load of a builiding using predicted usage.
+#' @details For '2P' model, see \code{\link{predict_heat_cool_load_2P}}.
 #' @param utility A utility data frame of \strong{unretrofit data} with columns: energy_type, OAT, usage, end_date, day and predicted_usage. Day column: the end date from end_date column.
-#' @param model A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
+#' @param model A character string. Model: '3PH', '3PC', '4P' or '5P'.
 #' @param ycp y-value at \code{cp1} and \code{cp2}.
 #' @param cp1 A numeric value. The first change-point. Defaults to NA.
 #' @param cp2 A numeric value. The second change-point. Defaults to NA.
@@ -243,21 +248,22 @@ percent_heat_cool_func <- function(predicted_total_consumption, predicted_heat_l
 #' #finding best model and calculating best model data frame
 #' best_df = batch_run_energy(util, 'Elec')$best_result_df 
 #' util$predicted_usage = calc_predicted_usage(util, best_df)
-#' predicted_load_df = predicted_heat_cool_load_func(util, best_df$model,
+#' predicted_load_df = predict_heat_cool_load_func(util, best_df$model,
 #'                              best_df$ycp, best_df$cp1, best_df$cp2)
 #' }
-predicted_heat_cool_load_func <- function(utility, model, ycp, cp1 = NA, cp2 = NA)
+predict_heat_cool_load_func <- function(utility, model, ycp, cp1 = NA, cp2 = NA)
 { 
   options(digits=15)
+
   heat_load = switch(model, "5P" = calc_predict_heat_load(utility, cp1, ycp),
                     "4P" = calc_predict_heat_load(utility, cp1, ycp),
                     "3PH" = calc_predict_heat_load(utility, cp1, ycp), 
-                    "3PC" = 0, "2P" = 0)
+                    "3PC" = 0)
 
   cool_load = switch(model, "5P" = calc_predict_cool_load(utility, cp2, ycp),
                     "4P" = calc_predict_cool_load(utility, cp2, ycp),
                     "3PC" = calc_predict_cool_load(utility, cp2, ycp), 
-                    "3PH" = 0, "2P" = 0)
+                    "3PH" = 0)
 
   return(data.frame(predicted_heat_load = heat_load, predicted_cool_load = cool_load))
 }
@@ -351,7 +357,7 @@ lean_analysis_ranking <- function(post_df, energy)
 
 #' Calculates percentanges of heat/cool load and baseload
 #'
-#' This function calculates predicted usage (of a single building) based on modeller result. Output \code{predicted_usage} is used in 
+#' This function calculates predicted usage (of a single building) based on modeller result. The output \code{predicted_usage} is used in \code{\link{predict_heat_cool_load_func}}
 #' @param util A data frame with columns: OAT, usage, and end_date. See \code{\link{unretrofit_utility}} for more information about data format.
 #' @param best_df Best model data frame (of a single builiding) returned from \code{\link{batch_run}}.
 #' @export
@@ -378,7 +384,7 @@ calc_predicted_usage <- function(util, best_df){
 #' Calculates baseload and heating and cooling load
 #'
 #' This function calculates \strong{(not predicted)} baseload and heating and cooling load by using output from \code{\link{percent_heat_cool_func}} and total_cosumption.
-#' @details This function is different from \code{\link{predicted_heat_cool_load_func}}. See Heat and Cool Load, subsection of Methodlogy section of bRema paper.
+#' @details This function is different from \code{\link{predict_heat_cool_load_func}}. See Heat and Cool Load, subsection of Methodlogy section of bRema paper.
 #' @param percent_heating A numeric vector.
 #' @param percent_cooling A numeric vector.
 #' @param percent_baseload A numeric vector.
@@ -389,4 +395,40 @@ calc_heat_cool_load <- function(percent_heating, percent_cooling, percent_baselo
   cool_load = percent_cooling*total_consumption
   baseload = percent_baseload*total_consumption
   return(data.frame(heat_load = heat_load, cool_load = cool_load, baseload = baseload))
+}
+
+#' Calculates heating and cooling load for 2P
+#'
+#' This function calculates predicted heating and cooling load of a builiding for '2P', model type.
+#' @details Since 2P does not have any changepoints, heating load and cooling load are calculated differently than other models. See Heat and Cool Load, subsection of Methodlogy section of bRema paper. For other model types, see \code{\link{predict_heat_cool_load_func}}.
+#' @param util A utility data frame of \strong{unretrofit data} with columns: energy_type, OAT, usage, end_date, day and predicted_usage. Day column: the end date from end_date column.
+#' @param predicted_total_consumption A numeric value. Gross total predicted usage.
+#' @param slope A numeric value.
+#' @export
+#' @examples
+#' \dontrun{
+#' bdbid_n = 'f3acce86'
+#' energy = 'Elec'
+#' #first subsetting utility data frame by bdbid and energy
+#' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86' &
+#'                unretrofit_utility$energy_type == 'Elec')
+#' #finding best model and calculating best model data frame
+#' best_df = batch_run_energy(util, 'Elec')$best_result_df 
+#' slope = subset(best_df$ls, best_df$bdbid == 'f3acce86' &
+#'          best_df$energy_type == 'Elec')
+#' util$predicted_usage = calc_predicted_usage(util, best_df)
+#' predicted_total_consumption = sum(util$predicted_usage * util$day)
+#' predicted_load_df = predict_heat_cool_load_2P(util,
+#'            predicted_total_consumption, slope)
+#' }
+predict_heat_cool_load_2P <- function(util, predicted_total_consumption, slope){
+  util = subset(util, min(util$predicted_usage) == util$predicted_usage)
+  baseload = util$predicted_usage*util$day
+  load =  predicted_total_consumption - baseload
+
+  if (slope < 0){
+    return(data.frame(predicted_heat_load = load, predicted_cool_load = 0))
+  }else{
+    return(data.frame(predicted_heat_load = 0, predicted_cool_load = load))
+  }
 }
