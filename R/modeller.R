@@ -847,11 +847,9 @@ aic_bic_test <- function(model, bestvalue, sample_number)
 #' This function returns the best model if there is one. Otherwise, returns an empty list.
 #' @param inter_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param energy_n A charcter string. Energy Type, either 'Elec' or 'Fuel'.
-#' @param metric_flag A boolean value. Defaults to TRUE. If set to \code{TRUE}, \code{\link{order_models}} function will be used for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.
-#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.
-#' @param Rsquared_elec A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.
-#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.
-#' @param Rsquared_fuel A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.
+#' @param metric_vec A numeric (integer) vector. This vector determines the pirority of model types. Defaults to \code{c(1,2,3,4,5)} for models: '2P', '3PC', '3PH', '4P', '5P'.
+#' @param CV_RMSE_n A numeric value. CV-RMSE threshold value. Defaults to 0.25.
+#' @param Rsquared_n A numeric value. Rsquared threshold value. Defaults to 0.75.
 #' @return A list with components:
 #' \item{stats}{A matrix of statistical results such as RMSE, R-squared}
 #' \item{params}{A matrix of parameters such as basload and slopes}
@@ -878,14 +876,12 @@ aic_bic_test <- function(model, bestvalue, sample_number)
 #'
 #' #best_model for pre-retrofit data
 #' retrofit_best_result = main_best_model_func(retrofit_result$pre, 'Elec')}
-main_best_model_func <- function(inter_result, energy_n, metric_flag = TRUE, CV_RMSE_elec = 0.25, Rsquared_elec = 0.75, CV_RMSE_fuel = 0.50, Rsquared_fuel = 0.75)
+main_best_model_func <- function(inter_result, energy_n, metric_vec = c(1,2,3,4,5), CV_RMSE_n = 0.25, Rsquared_n = 0.75)
 {
   best_result = model_pass_func(inter_result, energy_n, CV_RMSE_elec, Rsquared_elec, CV_RMSE_fuel, Rsquared_fuel)
 
-  if (metric_flag){
-  	if(energy_n == 'Elec'){flag = TRUE}else{flag = FALSE}
-  	}else{if(energy_n == 'Elec'){flag = FALSE}else{flag = TRUE}}
-
+  metric_df = data.frame(model_type = c('2P','3PC','3PH','4P','5P'), scores = metric_vec)
+ 
   if (length(best_result))
   {
     weight_df = metric_weight(best_result, flag)
@@ -1059,13 +1055,11 @@ calc_nac <- function(best_result, norm_temp = NULL)
 #' This function run batches given given a utility data frame of \strong{unretrofit data} and energy. See \code{\link{unretrofit_utility}.}
 #' @param utility A utility data frame of \strong{unretrofit data} with multiple buildings. The data frame must have columns: OAT, usage and estimated
 #' @param energy A character string. Energy Type, either 'Elec' or 'Fuel'.
-#' @param metric_flag A boolean value. Defaults to \code{TRUE}. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.
+#' @param metric_vec A numeric (integer) vector. This vector determines the pirority of model types. Defaults to \code{c(1,2,3,4,5)} for models: '2P', '3PC', '3PH', '4P', '5P'.
 #' @param plot_flag A boolean value. Defaults to \code{FALSE}. If set to \code{FALSE}, it will not return any plots.
 #' @param step A single numeric value or a vector. If it is a single numeric value, \code{create_model} will be used to find change-point(s). If it is a vector with more than one component, \code{create_model_2} will be used. Defaults to 0.5. Adjust \code{step}-size depending on independent varaiables.
-#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.
-#' @param Rsquared_elec A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.
-#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.
-#' @param Rsquared_fuel A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.
+#' @param CV_RMSE_n A numeric value. CV-RMSE threshold value. Defaults to 0.25.
+#' @param Rsquared_n A numeric value. Rsquared threshold value. Defaults to 0.75.
 #' @param n A numeric value that determines threshold for population test: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
 #' @param all_model_flag A boolean value. Defaults to \code{FALSE}. If set to \code{TRUE}, information of all models (i.e not just the best model) of a building will be put into a dataframe.
 #' @return A list with components:
@@ -1077,9 +1071,10 @@ calc_nac <- function(best_result, norm_temp = NULL)
 #' \dontrun{
 #' batch_result = batch_run_energy(unretrofit_utility, 'Elec')
 #' }
-batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FALSE, step = 0.5,
-							CV_RMSE_elec = 0.25, Rsquared_elec = 0.75, CV_RMSE_fuel = 0.50, 
-							Rsquared_fuel = 0.75, n = 4, all_model_flag = FALSE)
+batch_run_energy <- function(utility, energy, metric_vec = c(1,2,3,4,5),
+							plot_flag = FALSE, step = 0.5,
+							CV_RMSE_n = 0.25, Rsquared_n = 0.75,
+							n = 4, all_model_flag = FALSE)
 {
   utility = subset(utility, utility$energy_type == energy)
   plot_list = list()
@@ -1104,10 +1099,8 @@ batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FA
     	all_model_df = rbind(all_model_df, temp_all_model_df)
     }
 
-    best_result = main_best_model_func(inter_result,
-    									energy, metric_flag, CV_RMSE_elec,
-    									Rsquared_elec, CV_RMSE_fuel,
-    									Rsquared_fuel)
+    best_result = main_best_model_func(inter_result, energy, metric_vec,
+    									metric_fuel, CV_RMSE_n,Rsquared_n)
     if (!(length(best_result) == 0))
     {
       if (plot_flag)
@@ -1133,7 +1126,8 @@ batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FA
 #'
 #' This function run batches given a utility data frame of \strong{unretrofit data}. See \code{\link{unretrofit_utility}.}
 #' @param utility A utility data frame of \strong{unretrofit data}with multiple buildings.
-#' @param metric_flag A boolean value. Defaults to \code{TRUE}. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.
+#' @param metric_elec A numeric (integer) vector. This vector determines the pirority of model types for elec. Defaults to \code{c(1,2,3,4,5)} for models: '2P', '3PC', '3PH', '4P', '5P'.
+#' @param metric_fuel A numeric (integer) vector. This vector determines the pirority of model types for fuel. Defaults to \code{c(1,5,4,3,2)} for models: '2P', '3PC', '3PH', '4P', '5P'.
 #' @param plot_flag A boolean value. Defaults to \code{FALSE}. If set to \code{FALSE}, it will not return any plots.
 #' @param step A single numeric value or a vector. If it is a single numeric value, \code{create_model} will be used to find change-point(s). If it is a vector with more than one component, \code{create_model_2} will be used. Defaults to 0.5. Adjust \code{step}-size depending on independent varaiables.
 #' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.
@@ -1153,16 +1147,22 @@ batch_run_energy <- function(utility, energy, metric_flag = TRUE, plot_flag = FA
 #' \dontrun{
 #' batch_result = batch_run(unretrofit_utility)
 #' }
-batch_run <- function(utility, metric_flag = TRUE, plot_flag = FALSE, step = 0.5,
+batch_run <- function(utility, metric_elec = c(1,2,3,4,5), metric_fuel = c(1,5,4,3,2),
+						plot_flag = FALSE, step = 0.5,
 						CV_RMSE_elec = 0.25, Rsquared_elec = 0.75, CV_RMSE_fuel = 0.50, 
 						Rsquared_fuel = 0.75, n =4, all_model_flag = FALSE)
 { 
   result = list(best_result_df = data.frame(), plot_list = list(), all_model_df = data.frame())
   for (energy in as.character(unique(utility$energy_type)))
-  {
-    temp = batch_run_energy(utility, energy, metric_flag = metric_flag,
-    						plot_flag = plot_flag, step = step, CV_RMSE_elec,
-    						Rsquared_elec,CV_RMSE_fuel, Rsquared_fuel, n, all_model_flag)
+  {	
+
+  	metric_vec = switch(energy, 'Elec' = metric_elec, 'Fuel' = metric_fuel)
+  	CV_RMSE_n = switch(energy, 'Elec' = CV_RMSE_elec, 'Fuel' = CV_RMSE_fuel)
+  	Rsquared_n = switch(energy, 'Elec' = Rsquared_elec, 'Fuel' = Rsquared_fuel)
+
+    temp = batch_run_energy(utility, energy, metric_vec = metric_vec,
+    						plot_flag = plot_flag, step = step, CV_RMSE_n = CV_RMSE_n,
+    						 Rsquared_n = Rsquared_n, n, all_model_flag)
     result$best_result_df = rbind(result$best_result_df,temp$best_result_df)
     result$plot_list = append(result$plot_list, temp$plot_list)
     if (all_model_flag)
