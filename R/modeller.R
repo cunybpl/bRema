@@ -844,10 +844,10 @@ aic_bic_test <- function(model, bestvalue, sample_number)
 
 #' Returns the best model
 #' 
-#' This function returns the best model if there is one. Otherwise, return an empty list.
+#' This function returns the best model if there is one. Otherwise, returns an empty list.
 #' @param inter_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param energy_n A charcter string. Energy Type, either 'Elec' or 'Fuel'.
-#' @param metric_flag A boolean value. Defaults to TRUE. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.
+#' @param metric_flag A boolean value. Defaults to TRUE. If set to \code{TRUE}, \code{\link{order_models}} function will be used for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.
 #' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.
 #' @param Rsquared_elec A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.
 #' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.
@@ -1020,7 +1020,7 @@ order_models <- function(best_result, i, df)
 #' 
 #' This function returns a metric weight score for Fuel according to model type. This function is used in \code{metric_weight} function.
 #' @param best_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
-#' @param i A numeric variable.
+#' @param i A numeric value.
 #' @param df A data frame.
 #' @export
 #' @seealso \code{\link{metric_weight}}
