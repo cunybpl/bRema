@@ -11,7 +11,7 @@ y_gen(model, x, B, cp1 = NA, cp2 = NA)
 
 \item{x}{A vector. Independent variable.}
 
-\item{B}{A matrix, either 2 by 1 or 3 by 1 matrix. B[1] = y-value at cp1 (and cp2), B[2] = slope (if there are two slopes, this is the leftmost slope), B[3] = slope (if there are two slopes, this is the rightmost slope).}
+\item{B}{A matrix, either 2 by 1 or 3 by 1 matrix. \code{B[1]} = y-value at cp1 (and cp2), \code{B[2]} = slope (if there are two slopes, this is the leftmost slope), \code{B[3]} = slope (if there are two slopes, this is the rightmost slope).}
 
 \item{cp1}{A numeric value. The first change-point. Defaults to NA.}
 

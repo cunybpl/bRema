@@ -126,7 +126,7 @@ plot_point <- function(df, energy, pre_key = 0, model_fig = plot_ly(), b_name = 
 #' This function returns a line plot.
 #' @param x A vector (OAT).
 #' @param model A character string. Model: '2P', '3PC', '3PH', '4P', or '5P'.
-#' @param B A matrix, either 2 by 1 or 3 by 1 matrix. B[1] = y-value at cp1 (and cp2), B[2] = slope (if there are two slopes, this is the leftmost slope), B[3] = slope (if there are two slopes, this is the rightmost slope)
+#' @param B A matrix, either 2 by 1 or 3 by 1 matrix. \code{B[1]} = y-value at cp1 (and cp2), \code{B[2]} = slope (if there are two slopes, this is the leftmost slope), \code{B[3]} = slope (if there are two slopes, this is the rightmost slope)
 #' @param cp1 A numeric value. If there are two change-points, this is the leftmost change-point.
 #' @param cp2 A numeric value. If there are two change-points, this is the rightmost change-point. If there is only one change-point, set this to be NA. 
 #' @param energy A character string. Energy type, either 'Elec' or 'Fuel'.

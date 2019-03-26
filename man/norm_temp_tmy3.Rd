@@ -6,8 +6,8 @@
 \title{Normalized average monthly temperature}
 \format{A data frame with 12 rows and 2 variables:
 \describe{
-  \item{month}{month}
-  \item{avg_temp}{normalized average monthly temperature in Fahrenheit} 
+\item{month}{month}
+\item{avg_temp}{normalized average monthly temperature in Fahrenheit}
 }}
 \usage{
 norm_temp_tmy3

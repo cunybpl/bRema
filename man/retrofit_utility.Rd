@@ -6,14 +6,14 @@
 \title{Energy usage data (retrofitted) of 4 buildings}
 \format{A data frame with 194 rows and 8 variables:
 \describe{
-  \item{bdbid}{building id (anonymized)}
-  \item{usage}{energy usage per day (kWh for Electricity and BTU for fuel).}
-  \item{OAT}{monthly average outside air temperature in Fahrenheit}
-  \item{fiscal_year}{fiscal year}
-  \item{energy_type}{Energy type: Elec (Electricity) and Fuel}
-  \item{prepost}{this indicates whether energy usage data was collected during retrofit period or not. If the data is unretrofit, this column will be all ones. If the data is retrofit, this column will be: 1 for pre-retrotit, 2 for retrofit and 3 for post-retrofit. See \code{\link{unretrofit_utility}} for more information about unretrofitted data.}
-  \item{estimated}{this indicates whether energy usage data is estimated or actual data. 1 for estimated and 0 for acutal.}
-  \item{end_date}{end date of the month. Format: yyyy-mm-d}
+\item{bdbid}{building id (anonymized)}
+\item{usage}{energy usage per day (kWh for Electricity and BTU for fuel).}
+\item{OAT}{monthly average outside air temperature in Fahrenheit}
+\item{fiscal_year}{fiscal year}
+\item{energy_type}{Energy type: Elec (Electricity) and Fuel}
+\item{prepost}{this indicates whether energy usage data was collected during retrofit period or not. If the data is unretrofit, this column will be all ones. If the data is retrofit, this column will be: 1 for pre-retrotit, 2 for retrofit and 3 for post-retrofit. See \code{\link{unretrofit_utility}} for more information about unretrofitted data.}
+\item{estimated}{this indicates whether energy usage data is estimated or actual data. 1 for estimated and 0 for acutal.}
+\item{end_date}{end date of the month. Format: yyyy-mm-d}
 }}
 \usage{
 retrofit_utility

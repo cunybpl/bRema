@@ -12,7 +12,7 @@ aic_bic_model(final_best, sample_number)
 \item{sample_number}{Length of the data frame/number of temperature datapoints.}
 }
 \description{
-This function generates comprehensive output for the aic and bic statistical tests. 
+This function generates comprehensive output for the aic and bic statistical tests.
 It includes information such as the best model (that have the smallest aic and bic values) and the aic and bic values for each parameter model type.
 }
 \examples{

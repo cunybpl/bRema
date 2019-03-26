@@ -24,7 +24,7 @@ A list with components:
 \item{model}{Model type.}
 }
 \description{
-This function returns the best change-point parameter based model given a specific model and independent and dependent column matrices by using only one step size. 
+This function returns the best change-point parameter based model given a specific model and independent and dependent column matrices by using only one step size.
 This function is dependent on \code{test_model} and \code{splitter} function.
 }
 \examples{

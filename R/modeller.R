@@ -200,7 +200,7 @@ stats <- function(y, y_predict)
 #' This function returns a matrix of estimated usage given a specific model, independent variable matrix, parameter matrix and change-point(s).
 #' @param model A charater string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
 #' @param x A vector. Independent variable.
-#' @param B A matrix, either 2 by 1 or 3 by 1 matrix. B[1] = y-value at cp1 (and cp2), B[2] = slope (if there are two slopes, this is the leftmost slope), B[3] = slope (if there are two slopes, this is the rightmost slope).
+#' @param B A matrix, either 2 by 1 or 3 by 1 matrix. \code{B[1]} = y-value at cp1 (and cp2), \code{B[2]} = slope (if there are two slopes, this is the leftmost slope), \code{B[3]} = slope (if there are two slopes, this is the rightmost slope).
 #' @param cp1 A numeric value. The first change-point. Defaults to NA.
 #' @param cp2 A numeric value. The second change-point. Defaults to NA.
 #' @export

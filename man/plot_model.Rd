@@ -11,7 +11,7 @@ plot_model(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = plot_ly())
 
 \item{model}{A character string. Model: '2P', '3PC', '3PH', '4P', or '5P'.}
 
-\item{B}{A matrix, either 2 by 1 or 3 by 1 matrix. B[1] = y-value at cp1 (and cp2), B[2] = slope (if there are two slopes, this is the leftmost slope), B[3] = slope (if there are two slopes, this is the rightmost slope)}
+\item{B}{A matrix, either 2 by 1 or 3 by 1 matrix. \code{B[1]} = y-value at cp1 (and cp2), \code{B[2]} = slope (if there are two slopes, this is the leftmost slope), \code{B[3]} = slope (if there are two slopes, this is the rightmost slope)}
 
 \item{cp1}{A numeric value. If there are two change-points, this is the leftmost change-point.}
 
