@@ -9,7 +9,7 @@ inverse_order_models(best_result, i, df)
 \arguments{
 \item{best_result}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
 
-\item{i}{A numeric variable.}
+\item{i}{A numeric value.}
 
 \item{df}{A data frame.}
 }

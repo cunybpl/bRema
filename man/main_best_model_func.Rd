@@ -13,7 +13,7 @@ main_best_model_func(inter_result, energy_n, metric_flag = TRUE,
 
 \item{energy_n}{A charcter string. Energy Type, either 'Elec' or 'Fuel'.}
 
-\item{metric_flag}{A boolean value. Defaults to TRUE. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.}
+\item{metric_flag}{A boolean value. Defaults to TRUE. If set to \code{TRUE}, \code{\link{order_models}} function will be used for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.}
 
 \item{CV_RMSE_elec}{A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.}
 
@@ -37,7 +37,7 @@ A list with components:
 \item{figure}{A parameter graph.}
 }
 \description{
-This function returns the best model if there is one. Otherwise, return an empty list.
+This function returns the best model if there is one. Otherwise, returns an empty list.
 }
 \examples{
 \dontrun{

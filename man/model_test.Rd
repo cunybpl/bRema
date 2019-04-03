@@ -4,10 +4,12 @@
 \alias{model_test}
 \title{Tests if a model passes tTest, population test, and shape test}
 \usage{
-model_test(x, bestvalue, model, n = 4)
+model_test(x, y, bestvalue, model, n = 4)
 }
 \arguments{
 \item{x}{A vector. Independent variables.}
+
+\item{y}{A vector. Dependent variables.}
 
 \item{bestvalue}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
 
@@ -23,5 +25,5 @@ util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
 			& unretrofit_utility$energy_type == 'Elec')
 temp = sort_matrix(util$OAT,util$usage)
 bestvalue = create_model(temp$x, temp$y, '5P')
-test_result = model_test(temp$x, bestvalue, '5P')
+test_result = model_test(temp$x, temp$y, bestvalue, '5P')
 }
