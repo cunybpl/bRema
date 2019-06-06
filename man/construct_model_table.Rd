@@ -33,7 +33,7 @@ If more than half of energy usage points of a facility are zeros, that faciltiy 
 util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
 			& unretrofit_utility$energy_type == 'Elec')
 inter_result = run_model(util)
-best_result = main_best_model_func(inter_result, 'Elec')
+best_result = main_best_model_func(inter_result)
 construct_model_table(best_result, 'f3acce86', 'Elec', 2017)
 construct_model_table(inter_result[['3PC']], 'f3acce86', 'Elec', 2017)
 }

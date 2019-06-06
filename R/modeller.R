@@ -846,7 +846,6 @@ aic_bic_test <- function(model, bestvalue, sample_number)
 #' 
 #' This function returns the best model if there is one. Otherwise, returns an empty list.
 #' @param inter_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
-#' @param energy_n A charcter string. Energy Type, either 'Elec' or 'Fuel'.
 #' @param metric_vec A numeric (integer) vector. This vector determines the pirority of model types. Defaults to \code{c(1,2,3,4,5)} for models: '2P', '3PC', '3PH', '4P', '5P'.
 #' @param CV_RMSE_n A numeric value. CV-RMSE threshold value. Defaults to 0.25.
 #' @param Rsquared_n A numeric value. Rsquared threshold value. Defaults to 0.75.
@@ -876,16 +875,15 @@ aic_bic_test <- function(model, bestvalue, sample_number)
 #'
 #' #best_model for pre-retrofit data
 #' retrofit_best_result = main_best_model_func(retrofit_result$pre, 'Elec')}
-main_best_model_func <- function(inter_result, energy_n, metric_vec = c(1,2,3,4,5), CV_RMSE_n = 0.25, Rsquared_n = 0.75)
+main_best_model_func <- function(inter_result, metric_vec = c(1,2,3,4,5), CV_RMSE_n = 0.25, Rsquared_n = 0.75)
 {
-  best_result = model_pass_func(inter_result, energy_n, CV_RMSE_elec, Rsquared_elec, CV_RMSE_fuel, Rsquared_fuel)
+  best_result = model_pass_func(inter_result, CV_RMSE_n, Rsquared_n)
 
   metric_df = data.frame(model_type = c('2P','3PC','3PH','4P','5P'), scores = metric_vec)
  
   if (length(best_result))
   {
-    weight_df = metric_weight(best_result, flag)
-    best_model = choosing_final_best(best_result, weight_df)
+    best_model = choosing_final_best(best_result, metric_df)
   }else
   {
     best_model = list()
@@ -896,143 +894,61 @@ main_best_model_func <- function(inter_result, energy_n, metric_vec = c(1,2,3,4,
 
 #' Filters for models that have satisfying threshold
 #' 
-#' This function returns a list which contains models that have satisfying threshold. Threshold: CV-RMSE <= 0.25 for Elec (0.50 for Fuel), r-squared >= 0.75, and Pass all of shape test, tTest and population test. 
+#' @description
+#' This function returns a list which contains models that have satisfying threshold. Defualts threshold: CV-RMSE <= 0.25 and r-squared >= 0.75, and Pass all of shape test, tTest and population test. Suggested Threshold value for fuel is CV-RMSE <= 0.50 and r-squared >= 0.75; for elec, one can use default value.
 #' @param inter_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
-#' @param energy_n A charcter string. Energy Type, either 'Elec' or 'Fuel'.
-#' @param CV_RMSE_elec A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.
-#' @param Rsquared_elec A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.
-#' @param CV_RMSE_fuel A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.
-#' @param Rsquared_fuel A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.
+#' @param CV_RMSE_n A numeric value. CV-RMSE threshold value. Defaults to 0.25.
+#' @param Rsquared_n A numeric value. Rsquared threshold value. Defaults to 0.75.
 #' @export
 #' @examples
 #' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
 #'				& unretrofit_utility$energy_type == 'Elec')
 #' result = run_model(util)
-#' best_result = model_pass_func(result, 'Elec')
-model_pass_func <- function(inter_result, energy_n, CV_RMSE_elec = 0.25, Rsquared_elec = 0.75, CV_RMSE_fuel = 0.50, Rsquared_fuel = 0.75)
+#' best_result = model_pass_func(result)
+model_pass_func <- function(inter_result, CV_RMSE_n = 0.25, Rsquared_n = 0.75)
 { 
   best_result = list()
-  if (energy_n == 'Elec')
-  { 
+  
     model_list = c('5P', '4P', '3PC', '3PH', '2P')
     for (model in model_list)
     {
       if (inter_result[[model]]$stat_test$main_test == 'Pass'
-      		& .subset2(inter_result[[model]]$stats, 3)[1] <= CV_RMSE_elec
-      		& .subset2(inter_result[[model]]$stats, 2)[1] >= Rsquared_elec)
+      		& .subset2(inter_result[[model]]$stats, 3)[1] <= CV_RMSE_n
+      		& .subset2(inter_result[[model]]$stats, 2)[1] >= Rsquared_n)
       { 
         best_result[[model]] = inter_result[[model]]
       }
     }
-  }else
-  {
-    model_list = c('2P', '3PH', '3PC', '4P', '5P')
-    best_result = list()
-    for (model in model_list)
-    {
-      if (inter_result[[model]]$stat_test$main_test == 'Pass'
-      		& .subset2(inter_result[[model]]$stats, 3)[1] <= CV_RMSE_fuel
-      		& .subset2(inter_result[[model]]$stats, 2)[1] >= Rsquared_fuel)
-      { 
-        best_result[[model]] = inter_result[[model]]
-      }
-    }
-  }
   return(best_result)
 }
 
-#' Scores models based on energy and model types
-#' 
-#' This function returns a data frame in which best models are given a metric weight depending on energy type and model type.
-#' @param best_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
-#' @param flag A boolean value. Defaults to \code{TRUE}. If set to \code{TRUE}, \code{\link{order_models}} will be used. Else, \code{\link{inverse_order_models}} function will be used. It is recommened that to set this flag to \code{TRUE} for 'Elec' and \code{FALSE} for 'Fuel'
-#' @export
-#' @seealso \code{\link{main_best_model_func}}
-#' @examples
-#' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
-#'				& unretrofit_utility$energy_type == 'Elec')
-#' result = run_model(util)
-#' best_result = model_pass_func(result, 'Elec')
-#' metric_weight_df = metric_weight(best_result, TRUE)
-metric_weight <- function(best_result, flag = TRUE)
-{ 
-  weight_df = data.frame()
-  for (i in 1:length(best_result))
-  { 
-    if (flag)
-    {
-      weight_df = order_models(best_result, i, weight_df)
-    }else
-    {
-      weight_df = inverse_order_models(best_result, i, weight_df)
-    }
-  }
-  return(weight_df)
-}
+
 
 #' Chooses the best parameter model
 #' 
 #' This function returns the best model.
 #' @param best_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
-#' @param weight_df A data frame returned from \code{metric_weight} function
+#' @param metric_df A data frame with columns "model_type" (string) and "scores" (numeric/integer). The score of a given model determines the pirority of that model type.
 #' @export
 #' @examples
 #' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86' 
 #'				& unretrofit_utility$energy_type == 'Elec')
 #' result = run_model(util)
-#' best_result = model_pass_func(result, 'Elec')
-#' metric_weight_df = metric_weight(best_result, TRUE)
-#' best_model = choosing_final_best(best_result, metric_weight_df)
-choosing_final_best <- function(best_result, weight_df)
-{
-  model_type_best = rownames(subset(weight_df, max(weight_df$weight)==weight_df$weight))
-  best_result = best_result[[model_type_best]]
+#' best_result = model_pass_func(result)
+#' metric_df = data.frame(model_type = c('2P','3PC','3PH','4P','5P'), scores = c(1,2,3,4,5))
+#' best_model = choosing_final_best(best_result, metric_df)
+choosing_final_best <- function(best_result, metric_df)
+{	
+  pass_model_vec = c()
+  for (i in 1:length(best_result)){
+  	pass_model_vec = c(pass_model_vec, best_result[[i]]['model'])
+  }
+  metric_df = subset(metric_df, metric_df$model_type %in% pass_model_vec)
+  best_model_type = subset(metric_df$model_type, max(as.vector(metric_df$score)) == metric_df$score)
+  best_result = best_result[[best_model_type]]
   return(best_result)
 }
 
-
-#' Scores models for Elec
-#' 
-#' This function returns a metric weight score for Elec according to model type. This function is used in \code{metric_weight} function.
-#' @param best_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
-#' @param i A numeric value.
-#' @param df A data frame.
-#' @export
-#' @seealso \code{\link{metric_weight}}
-order_models <- function(best_result, i, df)
-{	
-  model = best_result[[i]][['model']]
-  df[model,'weight'] = switch(model,
-  	"2P" = 1,
-  	"3PC" = 2,
-  	"3PH" = 3,
-  	"4P" = 4,
-  	"5P" = 5
-  	)
-  return(df)
-}
-
-#' Scores models for Fuel
-#' 
-#' This function returns a metric weight score for Fuel according to model type. This function is used in \code{metric_weight} function.
-#' @param best_result A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
-#' @param i A numeric value.
-#' @param df A data frame.
-#' @export
-#' @seealso \code{\link{metric_weight}}
-inverse_order_models <- function(best_result, i, df)
-{	
-
-  model = 	best_result[[i]][['model']]
-  df[model, 'weight'] = switch(model,
-  	"2P" = 1,
-  	"3PC" = 5,
-  	"3PH" = 4,
-  	"4P" = 3,
-  	"5P" = 2,
-  	)
-  return(df)
-}
 
 #' Calculates normalized annual comsumption
 #'
@@ -1099,8 +1015,7 @@ batch_run_energy <- function(utility, energy, metric_vec = c(1,2,3,4,5),
     	all_model_df = rbind(all_model_df, temp_all_model_df)
     }
 
-    best_result = main_best_model_func(inter_result, energy, metric_vec,
-    									metric_fuel, CV_RMSE_n,Rsquared_n)
+    best_result = main_best_model_func(inter_result, metric_vec, CV_RMSE_n,Rsquared_n)
     if (!(length(best_result) == 0))
     {
       if (plot_flag)
@@ -1209,7 +1124,7 @@ batch_run <- function(utility, metric_elec = c(1,2,3,4,5), metric_fuel = c(1,5,4
 #' util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
 #'				& unretrofit_utility$energy_type == 'Elec')
 #' inter_result = run_model(util)
-#' best_result = main_best_model_func(inter_result, 'Elec')
+#' best_result = main_best_model_func(inter_result)
 #' construct_model_table(best_result, 'f3acce86', 'Elec', 2017)
 #' construct_model_table(inter_result[['3PC']], 'f3acce86', 'Elec', 2017)
 construct_model_table <- function(best_result, bdbid = NA, energy, fiscal_year = NA, n = NA, prepost = 1)

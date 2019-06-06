@@ -4,14 +4,17 @@
 \alias{batch_run_retrofit}
 \title{Batch run for both energy type (retrofit)}
 \usage{
-batch_run_retrofit(utility, metric_flag = TRUE, plot_flag = FALSE,
-  step = 0.5, CV_RMSE_elec = 0.25, Rsquared_elec = 0.75,
-  CV_RMSE_fuel = 0.5, Rsquared_fuel = 0.75, n_pre = 4, n_post = 4)
+batch_run_retrofit(utility, metric_elec = c(1, 2, 3, 4, 5),
+  metric_fuel = c(1, 5, 4, 3, 2), plot_flag = FALSE, step = 0.5,
+  CV_RMSE_elec = 0.25, Rsquared_elec = 0.75, CV_RMSE_fuel = 0.5,
+  Rsquared_fuel = 0.75, n_pre = 4, n_post = 4)
 }
 \arguments{
 \item{utility}{A utility data frame of retrofitted data with multiple buildings.}
 
-\item{metric_flag}{A boolean value. Defaults to \code{TRUE}. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.}
+\item{metric_elec}{A numeric (integer) vector. This vector determines the pirority of model types for elec. Defaults to \code{c(1,2,3,4,5)} for models: '2P', '3PC', '3PH', '4P', '5P'.}
+
+\item{metric_fuel}{A numeric (integer) vector. This vector determines the pirority of model types for fuel. Defaults to \code{c(1,5,4,3,2)} for models: '2P', '3PC', '3PH', '4P', '5P'.}
 
 \item{plot_flag}{A boolean value. Defaults to \code{FALSE}. If set to \code{FALSE}, it will not return any plots.}
 
