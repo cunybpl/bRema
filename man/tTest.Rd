@@ -4,10 +4,12 @@
 \alias{tTest}
 \title{tTest}
 \usage{
-tTest(x, bestvalue, model)
+tTest(x, y, bestvalue, model)
 }
 \arguments{
 \item{x}{A vector. Independent variables.}
+
+\item{y}{A vector. Dependent variables.}
 
 \item{bestvalue}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
 
@@ -21,7 +23,7 @@ x = matrix(c(1:10))
 y = matrix(c(1,2.5,3,4,5,5.5,7,8.3,9,10))
 model = '4P'
 bestvalue = create_model(x, y, model)
-t_matrix = tTest(x, bestvalue, model)
+t_matrix = tTest(x, y, bestvalue, model)
 }
 \seealso{
 \code{\link{calcT}}, \code{\link{pop_test}} and \code{\link{shape_test}}

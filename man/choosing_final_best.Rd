@@ -4,12 +4,12 @@
 \alias{choosing_final_best}
 \title{Chooses the best parameter model}
 \usage{
-choosing_final_best(best_result, weight_df)
+choosing_final_best(best_result, metric_df)
 }
 \arguments{
 \item{best_result}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
 
-\item{weight_df}{A data frame returned from \code{metric_weight} function}
+\item{metric_df}{A data frame with columns "model_type" (string) and "scores" (numeric/integer). The score of a given model determines the pirority of that model type.}
 }
 \description{
 This function returns the best model.
@@ -18,7 +18,7 @@ This function returns the best model.
 util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86' 
 			& unretrofit_utility$energy_type == 'Elec')
 result = run_model(util)
-best_result = model_pass_func(result, 'Elec')
-metric_weight_df = metric_weight(best_result, TRUE)
-best_model = choosing_final_best(best_result, metric_weight_df)
+best_result = model_pass_func(result)
+metric_df = data.frame(model_type = c('2P','3PC','3PH','4P','5P'), scores = c(1,2,3,4,5))
+best_model = choosing_final_best(best_result, metric_df)
 }

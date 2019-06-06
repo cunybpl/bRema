@@ -4,29 +4,24 @@
 \alias{batch_run_energy}
 \title{Batch run for specific energy (unretrofit)}
 \usage{
-batch_run_energy(utility, energy, metric_flag = TRUE, plot_flag = FALSE,
-  step = 0.5, CV_RMSE_elec = 0.25, Rsquared_elec = 0.75,
-  CV_RMSE_fuel = 0.5, Rsquared_fuel = 0.75, n = 4,
-  all_model_flag = FALSE)
+batch_run_energy(utility, energy, metric_vec = c(1, 2, 3, 4, 5),
+  plot_flag = FALSE, step = 0.5, CV_RMSE_n = 0.25, Rsquared_n = 0.75,
+  n = 4, all_model_flag = FALSE)
 }
 \arguments{
 \item{utility}{A utility data frame of \strong{unretrofit data} with multiple buildings. The data frame must have columns: OAT, usage and estimated}
 
 \item{energy}{A character string. Energy Type, either 'Elec' or 'Fuel'.}
 
-\item{metric_flag}{A boolean value. Defaults to \code{TRUE}. If set to \code{TRUE}, \code{\link{order_models}} function will be use for scoring models for 'Elec' and \code{\link{inverse_order_models}} for 'Fuel'. Else, \code{inverse_order_models} function will be used for 'Elec' and \code{order_models} for 'Fuel'.}
+\item{metric_vec}{A numeric (integer) vector. This vector determines the pirority of model types. Defaults to \code{c(1,2,3,4,5)} for models: '2P', '3PC', '3PH', '4P', '5P'.}
 
 \item{plot_flag}{A boolean value. Defaults to \code{FALSE}. If set to \code{FALSE}, it will not return any plots.}
 
 \item{step}{A single numeric value or a vector. If it is a single numeric value, \code{create_model} will be used to find change-point(s). If it is a vector with more than one component, \code{create_model_2} will be used. Defaults to 0.5. Adjust \code{step}-size depending on independent varaiables.}
 
-\item{CV_RMSE_elec}{A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.}
+\item{CV_RMSE_n}{A numeric value. CV-RMSE threshold value. Defaults to 0.25.}
 
-\item{Rsquared_elec}{A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.}
-
-\item{CV_RMSE_fuel}{A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.}
-
-\item{Rsquared_fuel}{A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.}
+\item{Rsquared_n}{A numeric value. Rsquared threshold value. Defaults to 0.75.}
 
 \item{n}{A numeric value that determines threshold for population test: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.}
 

@@ -4,28 +4,21 @@
 \alias{model_pass_func}
 \title{Filters for models that have satisfying threshold}
 \usage{
-model_pass_func(inter_result, energy_n, CV_RMSE_elec = 0.25,
-  Rsquared_elec = 0.75, CV_RMSE_fuel = 0.5, Rsquared_fuel = 0.75)
+model_pass_func(inter_result, CV_RMSE_n = 0.25, Rsquared_n = 0.75)
 }
 \arguments{
 \item{inter_result}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
 
-\item{energy_n}{A charcter string. Energy Type, either 'Elec' or 'Fuel'.}
+\item{CV_RMSE_n}{A numeric value. CV-RMSE threshold value. Defaults to 0.25.}
 
-\item{CV_RMSE_elec}{A numeric value. CV-RMSE threshold value for Elec. Defaults to 0.25.}
-
-\item{Rsquared_elec}{A numeric value. Rsquared threshold value for Elec. Defaults to 0.75.}
-
-\item{CV_RMSE_fuel}{A numeric value. CV-RMSE threshold value for Fuel. Defaults to 0.50.}
-
-\item{Rsquared_fuel}{A numeric value. Rsquared threshold value for Fuel. Defaults to 0.75.}
+\item{Rsquared_n}{A numeric value. Rsquared threshold value. Defaults to 0.75.}
 }
 \description{
-This function returns a list which contains models that have satisfying threshold. Threshold: CV-RMSE <= 0.25 for Elec (0.50 for Fuel), r-squared >= 0.75, and Pass all of shape test, tTest and population test.
+This function returns a list which contains models that have satisfying threshold. Defualts threshold: CV-RMSE <= 0.25 and r-squared >= 0.75, and Pass all of shape test, tTest and population test. Suggested Threshold value for fuel is CV-RMSE <= 0.50 and r-squared >= 0.75; for elec, one can use default value.
 }
 \examples{
 util = subset(unretrofit_utility, unretrofit_utility$bdbid == 'f3acce86'
 			& unretrofit_utility$energy_type == 'Elec')
 result = run_model(util)
-best_result = model_pass_func(result, 'Elec')
+best_result = model_pass_func(result)
 }
