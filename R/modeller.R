@@ -587,7 +587,7 @@ tTest <- function(x, y, bestvalue, model)
 	{
 		tstat1 = switch(as.character(model),
 			'3PC' = bestvalue$params['Slope1',1]/calc_std_error(x, y, y_predict, bestvalue$cp1, 'right'),
-			'3PH' = bestvalue$params['Slope1',1]/calc_std_error(x, y, y_predict, bestvalue$cp1, 'left'),)
+			'3PH' = bestvalue$params['Slope1',1]/calc_std_error(x, y, y_predict, bestvalue$cp1, 'left'))
 		if (abs(tstat1) > t_val){answer = 'Pass'}
 	}else
 	{	tstat1 = bestvalue$params['Slope1',1]/calc_std_error(x, y, y_predict, bestvalue$cp1, 'left')
