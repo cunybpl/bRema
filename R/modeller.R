@@ -947,7 +947,7 @@ choosing_final_best <- function(best_result, metric_df)
   }
   metric_df = subset(metric_df, metric_df$model_type %in% pass_model_vec)
   best_model_type = subset(metric_df$model_type, max(as.vector(metric_df$score)) == metric_df$score)
-  best_result = best_result[[best_model_type]]
+  best_result = best_result[[as.character(best_model_type)]]
   return(best_result)
 }
 
@@ -1001,6 +1001,8 @@ batch_run_energy <- function(utility, energy, metric_vec = c(1,2,3,4,5),
   fiscal_year = max(unique(utility$fiscal_year))
   for (bdbid_n in unique(utility$bdbid))
   {	
+  	print(energy)
+  	print(bdbid_n)
     util = subset(utility, utility$bdbid == bdbid_n)
     points = nrow(util)
     if(check_zeros(util)){
