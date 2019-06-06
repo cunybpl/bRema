@@ -517,7 +517,7 @@ run_model <- function(util, plot_flag = FALSE, step = 0.5, n = 4, unretrofit_fla
 	{	
 		bestvalue = switch(step_char, '1' = create_model(x,y,model, step = step),
 			create_model_2(x,y,model, step = step))
-		bestvalue[['stat_test']]= model_test(x, bestvalue, model, n) 
+		bestvalue[['stat_test']]= model_test(x, y, bestvalue, model, n) 
 		if (plot_flag){bestvalue[['figure']] = main_plot_handler(util, bestvalue, energy, b_name, unretrofit_flag)}
 		final_best[[model]] = bestvalue
 	}
@@ -555,6 +555,7 @@ calcT <- function(slope, RMSE, xinverse)
 #' 
 #' This function returns a matrix of "Pass" or "Fail" depending on tstat value(s) returned by \code{calcT} function. This function is called inside \code{model_test}. The threshold for tstat is set to 2 standard deviation from the null hypothesis where the slope is equal to zero.
 #' @param x A vector. Independent variables.
+#' @param y A vector. Dependent variables.
 #' @param bestvalue A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param model A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
 #' @export
@@ -564,8 +565,8 @@ calcT <- function(slope, RMSE, xinverse)
 #' y = matrix(c(1,2.5,3,4,5,5.5,7,8.3,9,10))
 #' model = '4P'
 #' bestvalue = create_model(x, y, model)
-#' t_matrix = tTest(x, bestvalue, model)
-tTest <- function(x, bestvalue, model)
+#' t_matrix = tTest(x, y, bestvalue, model)
+tTest <- function(x, y, bestvalue, model)
 {	
 	options(digits=15)
 	cp1 = bestvalue$cp1
@@ -577,23 +578,23 @@ tTest <- function(x, bestvalue, model)
 	tstat1 = 0.0
 	tstat2 = 0.0
 
-	if (model != '2P'){
-		xsplit = splitter(model, x, cp1, cp2)
-		xfinal = make_matrix(xsplit)
-		xinverse = solve(t(xfinal)%*%xfinal)
-	}
+	y_predict = y_gen(model, x, bestvalue$params, bestvalue$cp1, bestvalue$cp2)
 
 	if (model == '2P')
 	{
 		answer = 'Pass'
 	}else if (model == '3PC' | model == '3PH')
 	{
-		tstat1 = calcT(bestvalue$params['Slope1',1],RMSE, xinverse[2,2])
+		tstat1 = switch(as.character(model),
+			'3PC' = bestvalue$params['Slope1',1]/calc_std_error(x, y, y_predict, bestvalue$cp1, 'right'),
+			'3PH' = bestvalue$params['Slope1',1]/calc_std_error(x, y, y_predict, bestvalue$cp1, 'left'))
 		if (abs(tstat1) > t_val){answer = 'Pass'}
 	}else
-	{
-		tstat1 = calcT(bestvalue$params['Slope1',1],RMSE, xinverse[2,2])
-		tstat2 = calcT(bestvalue$params['Slope2',1],RMSE, xinverse[3,3])
+	{	tstat1 = bestvalue$params['Slope1',1]/calc_std_error(x, y, y_predict, bestvalue$cp1, 'left')
+		tstat2 = switch(as.character(model),
+				'4P' = bestvalue$params['Slope2',1]/calc_std_error(x, y, y_predict, bestvalue$cp1, 'right'),
+				'5P' = bestvalue$params['Slope2',1]/calc_std_error(x, y, y_predict, bestvalue$cp2, 'right'))
+		
 		if (abs(tstat2) > t_val & abs(tstat1) > t_val){answer = 'Pass'}
 	}
 
@@ -716,6 +717,7 @@ shape_test <- function(bestvalue, model)
 #' 
 #' This function determines if a given model passes tTest, population test, and shape test. The output is a nested list. If the model passes all three tests, 'Pass' is returned as \code{main_test} result; otherwise, as 'Fail'.
 #' @param x A vector. Independent variables.
+#' @param y A vector. Dependent variables.
 #' @param bestvalue A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param model A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
 #' @param n A numeric value that determines threshold for population test: \code{thereshold = number_of_independent_variables/n}. Defaults to 4. See \code{\link{pop_test}}.
@@ -725,12 +727,12 @@ shape_test <- function(bestvalue, model)
 #'				& unretrofit_utility$energy_type == 'Elec')
 #' temp = sort_matrix(util$OAT,util$usage)
 #' bestvalue = create_model(temp$x, temp$y, '5P')
-#' test_result = model_test(temp$x, bestvalue, '5P')
-model_test <- function(x, bestvalue, model, n = 4)
+#' test_result = model_test(temp$x, temp$y, bestvalue, '5P')
+model_test <- function(x, y, bestvalue, model, n = 4)
 {	
 	test_result = list(main_test = NULL)
 	sum = 0
-	test_result[['tTest']] = tTest(x, bestvalue, model)
+	test_result[['tTest']] = tTest(x, y, bestvalue, model)
 	test_result[['pop_test']] = pop_test(x, bestvalue, model, n)
 	test_result[['shape_test']] = shape_test(bestvalue, model)
 
@@ -1206,4 +1208,25 @@ check_zeros <- function(df)
 	{
 		return(TRUE)
 	}
+}
+
+calc_std_error <- function(x_0, y, y_predict, cp, left_right = 'left')
+{	
+	if (left_right == 'left'){
+		x = x_0[x_0 <= cp]
+		y = y[x_0 <= cp]
+		y_predict = y_predict[x_0 <= cp]
+	}else if (left_right == 'right'){
+		x = x_0[x_0 >= cp]
+		y = y[x_0 >= cp]
+		y_predict = y_predict[x_0 >= cp]
+	}else{
+		x = x_0
+	}
+
+	SSE = sum((y - y_predict)^2)
+	numerator = sqrt(SSE/((length(y) - 2)))
+	denominator = sqrt(sum((x-mean(x))^2))
+	SE = numerator/denominator
+	return(SE)
 }
