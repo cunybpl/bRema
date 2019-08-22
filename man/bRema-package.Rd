@@ -7,7 +7,7 @@
 \title{bRema: Building Energy Modelling and Analysis Tool in R}
 \description{
 Given a dataframe of outside air temperature, and energy usage (i.e utility data),
-it will calculate parameters based model and graph them by using plotly.
+    it will calculate parameters based model and graph them by using plotly.
 }
 \seealso{
 Useful links:

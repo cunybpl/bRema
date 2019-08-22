@@ -16,7 +16,7 @@ tTest(x, y, bestvalue, model)
 \item{model}{A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.}
 }
 \description{
-This function returns a matrix of "Pass" or "Fail" depending on tstat value(s) returned by \code{calcT} function. This function is called inside \code{model_test}. The threshold for tstat is set to 2 standard deviation from the null hypothesis where the slope is equal to zero.
+This function calcuates t-stats of slopes. This function is called inside \code{model_test}. The threshold for tstat is set to 2 standard deviation from the null hypothesis where the slope is equal to zero.
 }
 \examples{
 x = matrix(c(1:10))
@@ -26,5 +26,5 @@ bestvalue = create_model(x, y, model)
 t_matrix = tTest(x, y, bestvalue, model)
 }
 \seealso{
-\code{\link{calcT}}, \code{\link{pop_test}} and \code{\link{shape_test}}
+\code{\link{pop_test}} and \code{\link{shape_test}}
 }

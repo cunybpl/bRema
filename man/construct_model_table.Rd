@@ -4,8 +4,8 @@
 \alias{construct_model_table}
 \title{Construct model table}
 \usage{
-construct_model_table(best_result, bdbid = NA, energy, fiscal_year = NA,
-  n = NA, prepost = 1)
+construct_model_table(best_result, bdbid = NA, energy,
+  fiscal_year = NA, n = NA, prepost = 1)
 }
 \arguments{
 \item{best_result}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}

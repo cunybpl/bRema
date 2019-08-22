@@ -4,7 +4,8 @@
 \alias{plot_model}
 \title{Handles plotting lines for parameter models}
 \usage{
-plot_model(x, model, B, cp1, cp2, energy, pre_key = 0, unit, p1 = plot_ly())
+plot_model(x, model, B, cp1, cp2, energy, pre_key = 0, unit,
+  p1 = plot_ly())
 }
 \arguments{
 \item{x}{A vector (OAT).}

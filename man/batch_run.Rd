@@ -4,10 +4,10 @@
 \alias{batch_run}
 \title{Batch run for both energy type (unretrofit)}
 \usage{
-batch_run(utility, metric_elec = c(1, 2, 3, 4, 5), metric_fuel = c(1, 5, 4,
-  3, 2), plot_flag = FALSE, step = 0.5, CV_RMSE_elec = 0.25,
-  Rsquared_elec = 0.75, CV_RMSE_fuel = 0.5, Rsquared_fuel = 0.75, n = 4,
-  all_model_flag = FALSE)
+batch_run(utility, metric_elec = c(1, 2, 3, 4, 5), metric_fuel = c(1,
+  5, 4, 3, 2), plot_flag = FALSE, step = 0.5, CV_RMSE_elec = 0.25,
+  Rsquared_elec = 0.75, CV_RMSE_fuel = 0.5, Rsquared_fuel = 0.75,
+  n = 4, all_model_flag = FALSE)
 }
 \arguments{
 \item{utility}{A utility data frame of \strong{unretrofit data}with multiple buildings.}

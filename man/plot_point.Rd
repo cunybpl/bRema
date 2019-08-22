@@ -4,7 +4,8 @@
 \alias{plot_point}
 \title{Handles plotting points for parameter models}
 \usage{
-plot_point(df, energy, pre_key = 0, model_fig = plot_ly(), b_name = "")
+plot_point(df, energy, pre_key = 0, model_fig = plot_ly(),
+  b_name = "")
 }
 \arguments{
 \item{df}{A data frame with columns: x, y, z (OAT, usage, estimated from utillity data frame)}

@@ -5,8 +5,8 @@
 \title{Batch run for specific energy (unretrofit)}
 \usage{
 batch_run_energy(utility, energy, metric_vec = c(1, 2, 3, 4, 5),
-  plot_flag = FALSE, step = 0.5, CV_RMSE_n = 0.25, Rsquared_n = 0.75,
-  n = 4, all_model_flag = FALSE)
+  plot_flag = FALSE, step = 0.5, CV_RMSE_n = 0.25,
+  Rsquared_n = 0.75, n = 4, all_model_flag = FALSE)
 }
 \arguments{
 \item{utility}{A utility data frame of \strong{unretrofit data} with multiple buildings. The data frame must have columns: OAT, usage and estimated}

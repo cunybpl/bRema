@@ -5,8 +5,8 @@
 \title{Batch run for specific energy (retrofit)}
 \usage{
 batch_run_energy_retrofit(utility, energy, metric_vec = TRUE,
-  plot_flag = FALSE, step = 0.5, CV_RMSE_n = 0.25, Rsquared_n = 0.75,
-  n_pre = 4, n_post = 4)
+  plot_flag = FALSE, step = 0.5, CV_RMSE_n = 0.25,
+  Rsquared_n = 0.75, n_pre = 4, n_post = 4)
 }
 \arguments{
 \item{utility}{A utility data frame of retrofitted data with multiple buildings.}

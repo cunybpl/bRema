@@ -525,41 +525,16 @@ run_model <- function(util, plot_flag = FALSE, step = 0.5, n = 4, unretrofit_fla
 	return(final_best)
 }
 
-#' Calculates tstat of a slope
-#' 
-#' This function returns tstat given slope of the least square line, RMSE and the inverse matrix of independent variables. Only applies for model that is not '2P'.
-#' @param slope Slope of the least square line.
-#' @param RMSE RMSE
-#' @param xinverse The inverse matrix of independent variables.
-#' @export
-#' @seealso \code{\link{tTest}}
-#' @examples
-#' x = matrix(c(1:10))
-#' y = matrix(c(1,2.5,3,4,5,5.5,7,8.3,9,10))
-#' bestvalue = create_model(x, y, '4P')
-#' slope = bestvalue$params['Slope1',1]
-#' xsplit = splitter('4P', x, 5)
-#' xfinal = make_matrix(xsplit)
-#' xinverse = solve(t(xfinal)%*%xfinal)
-#' RMSE = as.numeric(bestvalue$stats['RMSE',1])
-#' tstat = calcT(slope, RMSE, xinverse) #tstat for leftmost slope of a '4P' model
-calcT <- function(slope, RMSE, xinverse)
-{	
-	options(digits=15)
-	c = xinverse
-	tstat = slope/(RMSE*sqrt(c))
-	return (tstat)
-}
 
 #' tTest
 #' 
-#' This function returns a matrix of "Pass" or "Fail" depending on tstat value(s) returned by \code{calcT} function. This function is called inside \code{model_test}. The threshold for tstat is set to 2 standard deviation from the null hypothesis where the slope is equal to zero.
+#' This function calcuates t-stats of slopes. This function is called inside \code{model_test}. The threshold for tstat is set to 2 standard deviation from the null hypothesis where the slope is equal to zero.
 #' @param x A vector. Independent variables.
 #' @param y A vector. Dependent variables.
 #' @param bestvalue A list containing information about parameters such as slopes, change-points, and stats such as RMSE.
 #' @param model A character string. Model such as '2P', '3PH', '3PC', '4P' or '5P'.
 #' @export
-#' @seealso \code{\link{calcT}}, \code{\link{pop_test}} and \code{\link{shape_test}}
+#' @seealso \code{\link{pop_test}} and \code{\link{shape_test}}
 #' @examples
 #' x = matrix(c(1:10))
 #' y = matrix(c(1,2.5,3,4,5,5.5,7,8.3,9,10))
@@ -1001,8 +976,6 @@ batch_run_energy <- function(utility, energy, metric_vec = c(1,2,3,4,5),
   fiscal_year = max(unique(utility$fiscal_year))
   for (bdbid_n in unique(utility$bdbid))
   {	
-  	print(energy)
-  	print(bdbid_n)
     util = subset(utility, utility$bdbid == bdbid_n)
     points = nrow(util)
     if(check_zeros(util)){
@@ -1010,6 +983,7 @@ batch_run_energy <- function(utility, energy, metric_vec = c(1,2,3,4,5),
     	next
    	}
     inter_result = run_model(util, plot_flag = plot_flag, step = step, n = n)
+	print(inter_result)
 
     if(all_model_flag)
     {

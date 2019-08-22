@@ -4,8 +4,8 @@
 \alias{main_best_model_retrofit}
 \title{Returns the best model for retrofit data}
 \usage{
-main_best_model_retrofit(inter_result, energy, metric_vec = c(1, 2, 3, 4, 5),
-  CV_RMSE_n = 0.25, Rsquared_n = 0.75)
+main_best_model_retrofit(inter_result, energy, metric_vec = c(1, 2, 3, 4,
+  5), CV_RMSE_n = 0.25, Rsquared_n = 0.75)
 }
 \arguments{
 \item{inter_result}{A list containing information about parameters such as slopes, change-points, and stats such as RMSE.}
